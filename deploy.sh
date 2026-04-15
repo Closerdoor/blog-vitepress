@@ -15,6 +15,6 @@ git commit -m 'deploy'
 
 # 如果发布到 https://<USERNAME>.github.io/<REPO>
 # https://github.com/Closerdoor/blog-vitepress
-git push -f git@github.com:Closerdoor/blog-vitepress.git master:gh-pages
+git push -f git@github.com:Closerdoor/blog-vitepress.git HEAD:gh-pages
 
 cd -
