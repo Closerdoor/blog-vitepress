@@ -21,3 +21,4 @@ vscode.db
 /.profile-oss
 .idea
 docs/.vitepress/dist/
+docs/.vitepress/cache/
