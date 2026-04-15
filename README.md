@@ -14,22 +14,20 @@
 
 ## 当前代码状态
 
-1. 站点当前仍是 `VuePress` 项目，尚未正式迁移完成。
-2. 当前脚本仍使用 `VuePress`：
+1. 站点已切换为 `VitePress` 项目。
+2. 当前脚本已使用 `VitePress`：
    - `npm run docs:dev`
    - `npm run docs:build`
-3. 当前部署脚本 `deploy.sh` 仍是旧的 `VuePress` 发布方式。
-4. 当前博客首页文件仍是 `docs/README.md`，不应误改为仓库说明。
+3. 当前部署脚本 `deploy.sh` 已切换为 `VitePress` 构建产物目录发布。
+4. 当前博客首页文件仍是 `docs/index.md`，不应误改为仓库说明。
 
 ## 迁移目标
 
 接下来将逐步完成以下事项：
 
-1. 将博客框架从 `VuePress` 迁移为 `VitePress`。
-2. 保留现有全部 Markdown 笔记、目录结构和主要内容入口。
-3. 把站点配置中的仓库路径改为与新仓库名一致。
-4. 重建 `VitePress` 所需的首页、导航、侧边栏和静态资源配置。
-5. 逐步替换旧的 `VuePress` 配置、依赖和构建方式。
+1. 保留现有全部 Markdown 笔记、目录结构和主要内容入口。
+2. 继续完善 `VitePress` 所需的首页、导航、侧边栏和静态资源配置。
+3. 逐步清理旧的 `VuePress` 配置、依赖和构建遗留内容。
 
 ## GitHub Pages 约束
 
@@ -51,4 +49,4 @@
 
 1. 当前本地目录已重命名为 `blog-vitepress`，后续工作请以该目录作为根目录。
 2. 后续对话如果看不到上层项目中的 `BLOG_SITES_DISCUSSION.md`，请默认以本文件中的结论作为当前仓库工作的直接上下文。
-3. 如果需要恢复博客首页，请只修改 `docs/README.md`；如果需要更新仓库说明，请修改根目录 `README.md`。
+3. 如果需要恢复博客首页，请只修改 `docs/index.md`；如果需要更新仓库说明，请修改根目录 `README.md`。

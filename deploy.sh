@@ -7,11 +7,11 @@ set -e
 npm run docs:build
 
 # 进入生成的文件夹
-cd docs/.vuepress/dist
+cd docs/.vitepress/dist
 
 git init
 git add -A
-git commit -m 'deploy'
+git -c user.name="wicked" -c user.email="178787622@qq.com" commit -m 'deploy'
 
 # 如果发布到 https://<USERNAME>.github.io/<REPO>
 # https://github.com/Closerdoor/blog-vitepress

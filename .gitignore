@@ -20,3 +20,4 @@ vscode.lsif
 vscode.db
 /.profile-oss
 .idea
+docs/.vitepress/dist/
