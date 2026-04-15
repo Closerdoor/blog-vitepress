@@ -158,7 +158,7 @@ content的参数有all,none,index,noindex,follow,nofollow。默认是all。
 <meta name="renderer" content="ie-stand"> //默认IE标准模式
 ```
 
-## <meta>标签 name = "viewport"详解
+## `meta` 标签 name = "viewport" 详解
 
 https://zhuanlan.zhihu.com/p/42151227
 https://zhuanlan.zhihu.com/p/70137917
@@ -170,6 +170,6 @@ https://zhuanlan.zhihu.com/p/70137917
 <meta name="keywords" content="your keywords">
 <!-- 页面描述内容 description -->
 <meta name="description" content="your description">
-<!-- 页面标题<title>标签(head 头部必须) -->
-<title>your title</title>
+<!-- 页面标题 title 标签(head 头部必须) -->
+&lt;title&gt;your title&lt;/title&gt;
 ```
