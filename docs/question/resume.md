@@ -565,7 +565,7 @@ a {
       <ul>
         <li><span class="contact-link">177****1190</span> </li>
         <li><span class="contact-link">178787622@qq.com</span> </li>
-        <li><a href="https://Closerdoor.github.io/vuepress-blog/" target="_blank"><span class="contact-link">https://Closerdoor.github.io/vuepress-blog/</span> </a></li>
+        <li><a href="https://Closerdoor.github.io/blog-vitepress/" target="_blank"><span class="contact-link">https://Closerdoor.github.io/blog-vitepress/</span> </a></li>
         <li><a href="https://github.com/Closerdoor" target="_blank"><span
               class="contact-link">github.com/Closerdoor</span> </a></li>
       </ul>

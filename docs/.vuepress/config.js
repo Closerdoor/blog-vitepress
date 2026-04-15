@@ -1,5 +1,5 @@
 module.exports = {
-  base: '/vuepress-blog/',
+  base: '/blog-vitepress/',
   title: 'Javascript 基础补完计划',
   description: 'Javascript基础知识',
   theme: 'reco',
