@@ -18,7 +18,7 @@
 2. 当前脚本已使用 `VitePress`：
    - `npm run docs:dev`
    - `npm run docs:build`
-3. 当前部署脚本 `deploy.sh` 已切换为 `VitePress` 构建产物目录发布。
+3. 当前站点部署方式已切换为 `GitHub Actions` 自动构建并发布到 `GitHub Pages`。
 4. 当前博客首页文件仍是 `docs/index.md`，不应误改为仓库说明。
 
 ## 迁移目标
@@ -31,9 +31,9 @@
 
 ## GitHub Pages 约束
 
-迁移过程中应尽量保持 GitHub Pages 的仓库侧配置不发生变化，避免提前改动远程发布设置。
+当前站点以 GitHub Pages 项目页形式部署，并由 GitHub Actions 自动完成构建和发布。
 
-如果站点继续以 GitHub Pages 项目页形式部署，则后续 `VitePress` 配置中的 `base` 应使用：
+对应 `VitePress` 配置中的 `base` 应使用：
 
 ```ts
 /blog-vitepress/

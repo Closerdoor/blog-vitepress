@@ -3,12 +3,20 @@ export default {
   title: 'Javascript 基础补完计划',
   description: 'Javascript基础知识',
   base: '/blog-vitepress/',
+  ignoreDeadLinks: true,
   srcDir: '.',
   vite: {
     publicDir: '.vitepress/public'
   },
   lastUpdated: true,
-  head: [['link', { rel: 'icon', href: '/favicon.png' }]],
+  head: [
+    ['link', { rel: 'icon', href: '/blog-vitepress/favicon.png' }],
+    [
+      'script',
+      {},
+      "(function(){var l=window.location;var prefix='/blog-vitepress/';var key='__vp_restore__';if(l.search.indexOf('?p=')===0){var target=l.search.slice(3).replace(/~and~/g,'&');window.history.replaceState(null,'',prefix+target+l.hash);}else if(l.pathname.indexOf(prefix)===0&&document.referrer&&document.referrer.indexOf(prefix)!==-1){sessionStorage.setItem(key,l.pathname+l.search+l.hash);}})();"
+    ]
+  ],
   themeConfig: {
     logo: '/favicon.png',
     nav: [
