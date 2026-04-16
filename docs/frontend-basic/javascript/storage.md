@@ -1,5 +1,5 @@
 ---
-title: cookie,localStorage和SessionStorage
+title: 浏览器存储
 author: Closerdoor
 date: '2021-12-12'
 ---

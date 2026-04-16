@@ -16,10 +16,19 @@
 
 1. 站点已切换为 `VitePress` 项目。
 2. 当前脚本已使用 `VitePress`：
-   - `npm run docs:dev`
-   - `npm run docs:build`
+   - `npm run dev`
+   - `npm run build`
 3. 当前站点部署方式已切换为 `GitHub Actions` 自动构建并发布到 `GitHub Pages`。
 4. 当前博客首页文件仍是 `docs/index.md`，不应误改为仓库说明。
+5. 当前文档主结构已按新的导航方案完成第一轮重组，顶部导航已整理为：
+   - `前端基础`
+   - `工程化`
+   - `Node.js`
+   - `工具箱`
+   - `代码块`
+   - `待整理`
+6. 当前主笔记已完成一轮目录迁移与重命名，原 `note / tool / code / quickCSS` 的主要内容已重组到新的专题目录下。
+7. `question / collect / tutorial / project` 相关内容已接入 `待整理` 导航，后续继续细化归类。
 
 ## 迁移目标
 
@@ -44,9 +53,12 @@
 1. 远程仓库地址已更新为 `git@github.com:Closerdoor/blog-vitepress.git`。
 2. 本地 `main` 已与远程 `origin/main` 完成同步。
 3. 已创建迁移前备份分支 `backup/vuepress-before-vitepress`，并推送到远程仓库。
+4. 已完成站点导航与侧边栏的第一轮结构重组，并确保 `VitePress` 构建通过。
+5. 已将一部分可明确归类的“待整理”内容并回主结构，例如 `AJAX`、`浏览器存储`、`条件类型`。
 
 ## 后续工作注意事项
 
 1. 当前本地目录已重命名为 `blog-vitepress`，后续工作请以该目录作为根目录。
 2. 后续对话如果看不到上层项目中的 `BLOG_SITES_DISCUSSION.md`，请默认以本文件中的结论作为当前仓库工作的直接上下文。
 3. 如果需要恢复博客首页，请只修改 `docs/index.md`；如果需要更新仓库说明，请修改根目录 `README.md`。
+4. 当前目录迁移已经发生，后续新增或调整文档时，请优先沿用新的目录结构：`frontend-basic`、`engineering`、`nodejs`、`toolbox`、`snippets`、`project`、`question`、`collect`、`tutorial`。

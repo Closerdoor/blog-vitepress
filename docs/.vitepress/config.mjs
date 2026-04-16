@@ -126,6 +126,8 @@ export default {
             { text: 'cookie', link: '/frontend-basic/javascript/cookie' },
             { text: '坐标', link: '/frontend-basic/javascript/position' },
             { text: '滚动条相关', link: '/frontend-basic/javascript/scrollbar' },
+            { text: 'AJAX', link: '/frontend-basic/javascript/ajax' },
+            { text: '浏览器存储', link: '/frontend-basic/javascript/storage' },
             { text: 'this', link: '/frontend-basic/javascript/this-basic' },
             { text: '正则表达式', link: '/frontend-basic/javascript/regexp' }
           ]
@@ -166,7 +168,10 @@ export default {
       '/frontend-basic/typescript/': [
         {
           text: 'TypeScript',
-          items: [{ text: '基础', link: '/frontend-basic/typescript/basic' }]
+          items: [
+            { text: '基础', link: '/frontend-basic/typescript/basic' },
+            { text: '条件类型', link: '/frontend-basic/typescript/conditional-types' }
+          ]
         }
       ],
       '/frontend-basic/mobile/': [
@@ -295,10 +300,9 @@ export default {
         {
           text: '资料收集',
           items: [
-            { text: 'ajax', link: '/collect/ajax' },
             { text: '闭包', link: '/collect/closure' },
             { text: 'eventLoop', link: '/collect/eventLoop' },
-            { text: 'cookie、localStorage 和 sessionStorage', link: '/collect/storage' }
+            { text: 'cookie、localStorage 和 sessionStorage', link: '/frontend-basic/javascript/storage' }
           ]
         }
       ],
