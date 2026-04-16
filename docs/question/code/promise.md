@@ -1,5 +1,5 @@
 ---
-title: promise
+title: Promise 原理
 author: Closerdoor
 date: '2023-05-10'
 ---

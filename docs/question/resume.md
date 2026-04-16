@@ -36,7 +36,7 @@ a img {
     border: none;
 }
 
-elements-of-type(html5-block) {
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
     display: block;
 }
 

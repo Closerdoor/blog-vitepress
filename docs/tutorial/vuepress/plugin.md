@@ -1,5 +1,5 @@
 ---
-title: vuepress博客说明文档
+title: VuePress 插件
 author: Closerdoor
 date: '2022-06-24'
 ---

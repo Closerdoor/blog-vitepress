@@ -1,5 +1,5 @@
 ---
-title: vue响应式原理
+title: Vue 响应式原理
 author: Closerdoor
 date: '2023-05-10'
 ---

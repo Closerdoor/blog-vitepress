@@ -11,7 +11,7 @@ hero:
   actions:
     - theme: brand
       text: 开始
-      link: /note/htmlcss/htmlcss/meta
+      link: /frontend-basic/html-css/meta
     - theme: alt
       text: GitHub
       link: https://github.com/Closerdoor/blog-vitepress
