@@ -4,45 +4,51 @@ author: Closerdoor
 date: '2022-06-24'
 ---
 
-## img
-`<img src="" alt="" width="" height="" >`
-img是无内容标签。  
-img标签是行内元素,它默认会对其父级盒子的基线，此时底部会有一小段空白区域，可通过设置vertical-align: middle;来居中对齐。 
-`vertical-align : baseline(默认) |top |middle |bottom;  `  
-img有4要素，src,alt,width,height
-alt表示图片描述，用于seo优化和图片加载失败后的显示.  
-width和height会变成Attributes Style，层级低于img
+## 基本写法
+
+```html
+<img src="/logo.png" alt="站点 Logo" width="200" height="80">
+```
+
+## 核心属性
+
+- `src`
+- `alt`
+- `width`
+- `height`
+
+## 布局注意点
+
+`img` 默认是替换元素，常见表现类似行内元素，底部可能出现基线空隙。
+
 ```css
 img {
-    width: 360px;
-    height: auto;
-}
-img[Attributes Style] {
-    width: 751px;
-    aspect-ratio: auto 751 / 377;
-    height: 377px;
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 ```
-### img加载成功回调 onload
-```js
-<img src="logo.png" onload="callback(this)" >
 
-let dom = document.querySelector('img')
-img.onload = function(){}
-```
-### img加载失败处理 onerror
-```js
-<img src="logo.png" onerror="errHandle(this)" >
+## 加载与失败处理
 
-function errHandle (imgDiv) {
-  imgDiv.src = 'errorTip.png'; 
-}
-```
-onerror 可能造成死循环
 ```js
-function errHandle (imgDiv) {
-  imgDiv.src = 'errorTip.png'; 
-  imgDiv.onerror = null; // 避免请求失败后不断请求
-}
-<img src="images/logo.png" onerror="javascript:this.src='errorTip.png';this.οnerrοr=null">`
+const img = document.querySelector('img');
+
+img.onload = () => {
+  console.log('loaded');
+};
+
+img.onerror = () => {
+  img.onerror = null;
+  img.src = '/fallback.png';
+};
 ```
+
+## 注意事项
+
+- `alt` 既影响可访问性，也影响图片加载失败时的降级体验。
+- 明确声明宽高有助于减少布局抖动。
+
+## 总结
+
+图片使用的关键是：可访问、可降级、少抖动。

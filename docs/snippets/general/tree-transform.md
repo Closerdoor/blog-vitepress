@@ -1,51 +1,48 @@
 ---
-title: 扁平/树形结构转换
-author: Closerdoor
+title: 扁平结构转树形结构
 date: '2021-12-12'
 ---
 
-## 扁平结构转换成树形结构(带排序)
+## 适用场景
+
+把后端返回的扁平列表转换为树，并按 `sort` 字段排序。
+
+## 最小示例
+
 ```js
-// 扁平结构转化成树形结构
-/**
- * @param {Array} list
- * @returns {Array}
- */
-export function transformTree(list) {
-  const tree = []
-  //'root'表示根节点id
-  for (let i = 0, len = list.length; i < len; i++) {
-    if (list[i].parentExtra === 'root' || !(list.some(item => item.extra === list[i].parentExtra))) {
-      const item = queryChildren(list[i], list)
-      tree.push(item)
-    }
-  }
-  //排序处理
-  const data = treeSort(tree, 'sort')
-  return data
-}
+function listToTree(list) {
+  const map = new Map(
+    list.map((item) => [item.extra, { ...item, children: [] }])
+  );
+  const tree = [];
 
-function queryChildren(parent, list) {
-  const children = []
+  map.forEach((item) => {
+    if (item.parentExtra === 'root' || !map.has(item.parentExtra)) {
+      tree.push(item);
+      return;
+    }
 
-  for (let i = 0, len = list.length; i < len; i++) {
-    if (list[i].parentExtra === parent.extra) {
-      const item = queryChildren(list[i], list)
-      children.push(item)
-    }
+    map.get(item.parentExtra).children.push(item);
+  });
+
+  function sortTree(nodes) {
+    nodes.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
+
+    nodes.forEach((node) => {
+      if (node.children.length > 0) {
+        sortTree(node.children);
+      } else {
+        delete node.children;
+      }
+    });
   }
-  if (children.length) {
-    parent.children = children
-  }
-  return parent
-}
-// 树形结构排序处理
-function treeSort(arr, sortName) { // sortName 表示用来排序的字段
-  arr.sort((a, b) => a[sortName] - b[sortName]).forEach((item) => {
-    if (item.children) {
-      treeSort(item.children, sortName)
-    }
-  })
-  return arr
+
+  sortTree(tree);
+  return tree;
 }
 ```
+
+## 说明
+
+- 该实现时间复杂度接近 `O(n)`，比递归反复扫描列表更稳定。
+- 缺失父节点的数据会被提升为根节点，便于容错。

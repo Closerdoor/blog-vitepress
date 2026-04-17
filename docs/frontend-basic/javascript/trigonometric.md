@@ -1,26 +1,48 @@
 ---
-title: Math中的三角函数计算
+title: Math 中的三角函数计算
 author: Closerdoor
 date: '2022-06-28'
 ---
 
-## 度(deg)和弧度(angel)
-"度"的定义是，两条射线从圆心向圆周射出，形成一个夹角和夹角正对的一段弧。当这段弧长正好等于圆周长的360分之一时，两条射线的夹角的大小为1度。
+## 角度与弧度
 
-"弧度"的定义是，两条射线从圆心向圆周射出，形成一个夹角和夹角正对的一段弧。当这段弧长正好等于圆的半径时，两条射线的夹角大小为1弧度。
+JavaScript 中 `Math.sin`、`Math.cos`、`Math.tan` 的参数都要求传入弧度。
 
-![An image](/pic_deg.png)
+换算公式：
+
 ```js
-//角度与弧度换算
-deg = angel / (2 * Math.PI);
-angel = deg * Math.PI / 180;
-```
-## Math.sin(angel)和Math.cos(angel)
-Math.sin()等静态方法，参数为弧度
-```js
-let sin30 = Math.sin(30 * Math.PI / 180);//0.499999994
-let cos60 = Math.cos(60 * Math.PI / 180);//0.500000001
-let tan45 = Math.tan(45 * Math.PI / 180);//0.999999999
+const rad = (deg) => deg * Math.PI / 180;
+const deg = (rad) => rad * 180 / Math.PI;
 ```
 
-## 计算2点间的角度
+## 基本用法
+
+```js
+Math.sin(rad(30));
+Math.cos(rad(60));
+Math.tan(rad(45));
+```
+
+由于浮点精度问题，结果可能是 `0.499999999...`，这是正常现象。
+
+## 计算两点夹角
+
+通常用 `Math.atan2`：
+
+```js
+function getAngle(x1, y1, x2, y2) {
+  const radian = Math.atan2(y2 - y1, x2 - x1);
+  return deg(radian);
+}
+```
+
+## 应用场景
+
+- 旋转动画
+- 拖拽方向计算
+- Canvas / SVG 绘图
+- 地图与坐标计算
+
+## 总结
+
+三角函数最容易错的地方只有两个：角度弧度混用，以及浮点误差。

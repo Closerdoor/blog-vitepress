@@ -1,157 +1,137 @@
 ---
-title: AJAX
+title: AJAX 与现代请求方式
 author: Closerdoor
 date: '2021-12-12'
 ---
 
-## AJAX = 异步 JavaScript 和 XML。是一种用于创建快速动态网页的技术。
+## 是什么
 
-通过在后台与服务器进行少量数据交换，AJAX 可以使网页实现异步更新。这意味着可以在不重新加载整个网页的情况下，对网页的某部分进行更新。
+AJAX 指浏览器在不整页刷新的前提下与服务端交换数据。现代项目中更常用 `fetch` 或 `axios`，但理解 `XMLHttpRequest` 仍然有助于排查网络问题。
 
-## 异步编程和Promise
+## 核心概念
 
-异步编程的结果出现顺序是不一定的，如果要让他们以一定得顺序处理得到结果，可以通过嵌套的方式，则先得到外层结果，再得到内层结果，但是多次嵌套会形成"回调地狱"，影响代码可读性，所以Promise应运而生。
+- 异步请求不会阻塞页面渲染。
+- 请求结果通常通过回调、`Promise` 或 `async/await` 处理。
+- 常见数据格式包括 `JSON`、文本和二进制内容。
+
+浏览器原生 AJAX 还受同源策略限制：协议、域名、端口三者都相同才算同源。
+
+## 原生 XHR
 
 ```js
-var flag=true;
-var p=new Promise(function(resolve, reject){
-    setTimeout(function(){
-        if(flag){
-            resolve("正常运行");
-        }else{
-            reject("系统出错");
-        }
-    },1500);
-});
-//p.then中有2个函数，分别获得resolve的结果和reject的结果
-p.then(function(data){
-    console.log(data);
-},function(info){
-    console.log(info);
-});
-var change =function(){
-    flag=!flag;
-    console.log(data);
-    console.log(info);
-}
-```
+function request({ method = 'GET', url, data }) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const upperMethod = method.toUpperCase();
 
-## 接口请求调用方式
+    let finalUrl = url;
+    let body = null;
 
-### 1、原生ajax(封装)
-```js
-obj={method,url,data,success}
-//data = {
-  uname:'jack',
-  age:18
-}
-//把data对象转换成字符串拼接形式 key1=value1&key2=value2
-function queryString(data){
-  var str=''
-  for(var key in data){
-    str += key + '=' + data[key] + &
-  }
-  return str.substring(0,str.length - 1)
-}
-//大一统ajax
-function ajax(obj){
-  var xhr=null
-  try{
-    xhr=new XMLHttpRequest()
-  }catch(error){
-    xhr=new ActiveXObject("Microsoft.XMLHTTP")
-  }
-  if(obj.method == 'get' && obj.data){
-    obj.url+=?
-    obj.url+=queryString(obj.data)
-    obj.data = null
-  }
-  xhr.open(obj.method,obj.url)
-  if(obj.method=== 'post' && obj.data){
-    xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded')
-  }
-  xhr.onreadystatechange = function(){
-    if(xhr.readyState ==4 && xhr.status ==200){
-      var type = xhr.getReponseHeader('Content-Type')
-      //是否为json
-      if(type.indexOf('json') != -1){
-        obj.success(JSON.parse(xhr.respongText))
-      }
-      //是否为xml
-      else if(type.indexOf('xml')!=-1){
-        obj.success(xhr.responseXML)
-      }
-      //普通字符串
-      else{
-        obj.success(xhr.responseText)
-      }
+    if (upperMethod === 'GET' && data) {
+      const params = new URLSearchParams(data).toString();
+      finalUrl += (url.includes('?') ? '&' : '?') + params;
+    } else if (data) {
+      body = JSON.stringify(data);
     }
-  }
-  xhr.send(obj.data)
+
+    xhr.open(upperMethod, finalUrl, true);
+
+    if (body) {
+      xhr.setRequestHeader('Content-Type', 'application/json');
+    }
+
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState !== 4) return;
+
+      if (xhr.status >= 200 && xhr.status < 300) {
+        const contentType = xhr.getResponseHeader('Content-Type') || '';
+        if (contentType.includes('application/json')) {
+          resolve(JSON.parse(xhr.responseText));
+          return;
+        }
+        resolve(xhr.responseText);
+        return;
+      }
+
+      reject(new Error(`Request failed: ${xhr.status}`));
+    };
+
+    xhr.send(body);
+  });
 }
 ```
-### 2、基于jQuery的ajax
 
-### 3、fetch
-基本用法
+## Fetch
+
 ```js
-fetch('http://localhost:3000/abc').then(data=>{
-  return data.text()；//data.text()是一个Promise实例对象
-}).then(ret=>{
-  console.log(ret)；//注意这里ret才是最终得到的数据
-})；
+async function loadUser() {
+  const response = await fetch('/api/user');
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+
+  return response.json();
+}
 ```
 
-### 4、axios
+## Axios
 
-基本用法
 ```js
-axios.get('/adata')
-.then(res=>{
-  console.log(res.data)//data属性名称是固定的，用于获取后台响应的数据
-])
-```
-### 补充:async/await
+import axios from 'axios';
 
-主要是简化了Promise的then()操作。await后面必须跟一个Promise实例对象
+async function loadUser() {
+  const { data } = await axios.get('/api/user');
+  return data;
+}
+```
+
+## async/await
+
+`async/await` 只是对 `Promise` 的语法简化，异常仍然要通过 `try...catch` 处理。
+
+```js
+async function submitForm(payload) {
+  try {
+    const data = await request({
+      method: 'POST',
+      url: '/api/form',
+      data: payload,
+    });
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+```
 
 ## 跨域
 
-方式：
+常见方案：
 
-1、cors:cross origin resource sharing
+- 服务端设置 CORS 响应头。
+- 开发环境使用代理转发。
+- JSONP 只适用于 `GET`，现在很少新用。
 
-后端：委托php文件允许访问，进行以下设置
+### JSONP 原理
 
-header('Access-Control-Allow-Origin:*')
-2、JSONP
+JSONP 利用的是 `script` 标签可以跨域加载脚本的特性，本质不是 XHR。
 
-### JSONP
-
-通过约定，访问跨域服务器上数据的方法。
-
-这种约定其实就是一个函数定义，并且具备数据参数的定义，由跨域服务器的脚本或动态生成的脚本调用并且传递数据参数。该函数称之为“跨域回调函数”。
-
-* 利用的是script标签的src属性支持跨域访问
-* script标签的后面写上需要请求的页面发送了一个方法的名字到服务器
-* 服务器接收到名字之后拼接一个方法的调用在参数中传入了需要给浏览器的数据
-* 返回给浏览器。浏览器把他当做js解析
-
-```js
-//前端-注意回调函数必须在请求标签之前
+```html
 <script>
-function doSomething(data){
-  console.1og(data);
-}
+  function handleData(data) {
+    console.log(data);
+  }
 </script>
-<script src="http://192,168.70,78/2017-8-17/12, JSONP/backData
-.php?ca1lback=dosomething">
-</script>
-//后端-php
-<?php
-//doSomething
-$methodName=$_GET['ca11back']；
-//拼接一个函数调用的字符串dosomething()，把数据放到函数形参里
-echo $methodName.'({"name"："jack"，"friend"："tony"})；
-?>
+<script src="https://example.com/api?callback=handleData"></script>
 ```
+
+## 注意事项
+
+- 请求体与 `Content-Type` 要匹配。
+- `fetch` 在 HTTP 4xx/5xx 时不会自动抛错，需要手动判断 `response.ok`。
+- 前端跨域本质上是浏览器安全限制，最终仍需服务端配合。
+
+## 总结
+
+XHR 是基础，`fetch` 是浏览器原生现代方案，`axios` 更适合统一拦截、超时和业务封装。

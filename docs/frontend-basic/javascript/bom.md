@@ -4,70 +4,82 @@ author: Closerdoor
 date: '2021-12-12'
 ---
 
-## window
-bom的核心是window对象。window作为全局对象，全局变量都是window的属性，document对象属于全局window对象的属性分支。
-`'document' in window  //true`
+## 是什么
+
+BOM 即 Browser Object Model，用于访问浏览器窗口、地址栏、历史记录、屏幕信息等运行环境能力。
+
+## 核心对象
+
+### window
+
+浏览器全局对象，定时器、弹窗、滚动等能力都挂在其上。
+
 ```js
-//window方法
-window.alert()
-window.setInterval()
-window.prompt();
-window.resizeTo(width,height)
-window.close(); //关闭当前页面 ctrl+w
-window.print(); //调用浏览器打印功能 ctrl+p  
-window.blur();
-window.moveTo(10, 10)
+window.setTimeout(() => {}, 1000);
+window.alert('hello');
+window.print();
 ```
-## document
-`window.document`
+
+### location
+
+用于读取和修改当前地址。
+
 ```js
-document.lastModified //文档最后一次修改时间
-document.referrer //追踪 何处跳转到当前页面 何处跳转到当前页面 从哪个页面跳转过来的
-document.title //title标签值 网页标题
-document.URL //当前页面的URL地址
-document.anchors["anchName"]//返回一个数组，数组中的元素为文档中所有锚元素。
+location.href;
+location.origin;
+location.pathname;
+location.search;
+location.reload();
+location.replace('/login');
 ```
-## location
-`window.location`
+
+### history
+
 ```js
-//属性
-location.host //127.0.0.1:5503 hostName+port = host
-location.hostname// 地址 | 域名
-location.port //端口
-location.origin // http://127.0.0.1:5503 协议头 + host + port
-location.href //完整URL路径
-//location.href = 'https://www.mi.com/'; //替换当前地址栏文本进行跳转
-//href中需要进行编码和解码 encodeURI(str) decodeURI(str)
-location.pathname //路径
-location.protocol //协议
-//方法
-location.reload(true | false); //默认为false。为false时从浏览器缓存中重载(f5)，为true时从服务器端重载(ctrl+ f5) 
-location.assign("home"); //在host后面拼接 路径
-location.replace("http:www.baidu.com")
+history.length;
+history.back();
+history.forward();
+history.go(-1);
 ```
-## navigator
-`window.navigator`浏览器与操作系统信息
+
+### navigator
+
 ```js
-navigator.userAgent //(有用)替代appVersion
-navigator.language//(有用)浏览器语言
-navigator.taintEnabled //计算机平台号 判断windows linux unix
-navigator.appVersion//版本信息(操作系统/浏览器内核/浏览器)
-navigator.appCodeName//Mozilla
-navigator.connection.effectiveType//用户网络状态
-navigator.cookieEnabled//判断浏览器是否开启了cookie
-navigator.product //实际内核
+navigator.userAgent;
+navigator.language;
+navigator.onLine;
+navigator.geolocation;
 ```
-## screen
-`window.screen`用户显示设备信息 (显示器)
+
+### screen
+
 ```js
-screen.width
-screen.height
+screen.width;
+screen.height;
 ```
-## history
-`window.history`当前会话的浏览历史
+
+## document 与 BOM 的关系
+
+`document` 属于 DOM，但通常通过 `window.document` 访问，因此在学习阶段经常与 BOM 一起出现。
+
+## 常见事件
+
 ```js
-history.length //浏览路径长度
-history.back(); //回退键 退回到之前的网页
-history.forward(); //前进键 跳转到页面队列中的下一个地址
-history.go(-2); //传参跳转到任意一个 页面队列地址  -2 点击两次退格键
+window.addEventListener('beforeunload', () => {
+  localStorage.removeItem('draft');
+});
+
+window.addEventListener('storage', () => {
+  console.log('storage changed');
+});
 ```
+
+## 注意事项
+
+- `location.replace()` 不会留下当前历史记录。
+- `userAgent` 只能作为弱判断，不能作为可靠能力检测。
+- 某些窗口控制 API 在现代浏览器中受限，不能假设都能成功执行。
+
+## 总结
+
+BOM 关注的是浏览器环境本身，DOM 关注的是页面结构与节点。

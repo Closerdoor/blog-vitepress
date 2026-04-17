@@ -1,66 +1,85 @@
 ---
-title: Blob
+title: Blob 与文件下载处理
 author: Closerdoor
 date: '2022-06-24'
 ---
 
-## 后端返回Blob数据流处理
+`Blob` 常用于浏览器端文件下载、预览与上传前处理。本文整理后端返回二进制文件时的常见处理方式。
+
+## 下载后端返回的 Blob
+
+以 `axios` 为例，请求文件时应显式指定 `responseType: 'blob'`：
+
 ```js
-//ajax拦截
-response => {
-  const res = response.data
-  if (res instanceof Blob) {
-    const str = decodeURI(response.headers['content-disposition'])
-    const start = str.indexOf('filename') + 9
-    localStorage.setItem('fileName', str.substring(start))
-    return res
-  }
-  if (res.status !== 0) {
-    Message({
-      message: res.message || 'Error',
-      type: 'error',
-      duration: 5 * 1000
-    })
-    return Promise.reject(new Error(res.message || 'Error'))
-  } else {
-    return res
-  }
+import axios from 'axios'
+
+async function downloadFile() {
+  const response = await axios.get('/api/export', {
+    responseType: 'blob',
+  })
+
+  const disposition = response.headers['content-disposition'] || ''
+  const match = disposition.match(/filename\*=UTF-8''([^;]+)|filename="?([^";]+)"?/i)
+  const filename = decodeURIComponent(
+    match?.[1] || match?.[2] || `export-${Date.now()}.xlsx`
+  )
+
+  const url = URL.createObjectURL(response.data)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  link.click()
+  URL.revokeObjectURL(url)
 }
-//异步返回值处理
-http.get(url).then(res => {
-  const URL = window.URL || window.webkitURL
-  this.downloadUrl && URL.revokeObjectURL(this.downloadUrl)
-  this.downloadUrl = URL.createObjectURL(res)
-  let a = document.createElement('a')
-  a.download = '文件名-' + new Date().getTime() + '.xls'
-  a.href = this.downloadUrl
-  a.click()
-  a = null
-})
 ```
 
-## 文件上传处理
+## 本地文件预览
+
+### 使用 `URL.createObjectURL()`
+
+适合快速预览图片、视频等本地文件：
+
 ```js
-//<input type="file">
-input.addEventListener('change', function (e) {
-  let file = this.files[0];
+function createBlobUrl(file) {
+  return URL.createObjectURL(file)
+}
+```
+
+使用结束后应调用 `URL.revokeObjectURL(url)` 释放内存。
+
+### 使用 `FileReader`
+
+适合需要读取为 Base64 文本的场景：
+
+```js
+function readFileAsDataURL(file) {
+  const reader = new FileReader()
+
+  reader.onload = () => {
+    console.log(reader.result)
+  }
+
+  reader.onprogress = (e) => {
+    console.log(e.loaded, e.total)
+  }
+
+  reader.readAsDataURL(file)
+}
+```
+
+## 文件选择示例
+
+```js
+const input = document.querySelector('input[type="file"]')
+
+input.addEventListener('change', (event) => {
+  const file = event.target.files?.[0]
+
+  if (!file) {
+    return
+  }
+
+  const previewUrl = createBlobUrl(file)
+  console.log(file.name, previewUrl)
 })
-//blob处理
-function careateBolbFile(file) {
-  let url = URL.createObjectURL(file);
-  return url;
-}
-function createFileReader(file) {
-  let fileReader = new FileReader()
-  fileReader.readAsDataURL(file)
-  fileReader.onload = function () {
-    let src = this.result;
-    // console.log(src)
-  }
-  //读取文件进行中定时触发
-  fileReader.onprogress = function (e) {
-    // console.log(e.total, e.loaded);
-  }
-  console.log(fileReader)
-}
 ```

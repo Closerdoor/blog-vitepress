@@ -1,53 +1,49 @@
 ---
-title: audio音频
+title: Audio 音频
 author: Closerdoor
 date: '2022-07-05'
 ---
 
-## audio
+## 基本用法
 
-### 属性
-| audioTracks         | 返回表示可用音频轨道的 AudioTrackList 对象。        |
-| ------------------- | --------------------------------------------------- |
-| autoplay            | 设置或返回是否在就绪（加载完成）后随即播放音频。    |
-| buffered            | 返回表示音频已缓冲部分的 TimeRanges 对象。          |
-| controller          | 返回表示音频当前媒体控制器的 MediaController 对象。 |
-| controls            | 设置或返回音频是否应该显示控件（比如播放/暂停等）。 |
-| crossOrigin         | 设置或返回音频的 CORS 设置。                        |
-| currentSrc          | 返回当前音频的 URL。                                |
-| currentTime         | 设置或返回音频中的当前播放位置（以秒计）。          |
-| defaultMuted        | 设置或返回音频默认是否静音。                        |
-| defaultPlaybackRate | 设置或返回音频的默认播放速度。                      |
-| duration            | 返回音频的长度（以秒计）。                          |
-| ended               | 返回音频的播放是否已结束。                          |
-| error               | 返回表示音频错误状态的 MediaError 对象。            |
-| loop                | 设置或返回音频是否应在结束时再次播放。              |
-| mediaGroup          | 设置或返回音频所属媒介组合的名称。                  |
-| muted               | 设置或返回是否关闭声音。                            |
-| networkState        | 返回音频的当前网络状态。                            |
-| paused              | 设置或返回音频是否暂停。                            |
-| playbackRate        | 设置或返回音频播放的速度。                          |
-| played              | 返回表示音频已播放部分的 TimeRanges 对象。          |
-| preload             | 设置或返回音频的 preload 属性的值。                 |
-| readyState          | 返回音频当前的就绪状态。                            |
-| seekable            | 返回表示音频可寻址部分的 TimeRanges 对象。          |
-| seeking             | 返回用户当前是否正在音频中进行查找。                |
-| src                 | 设置或返回音频的 src 属性的值。                     |
-| textTracks          | 返回表示可用文本轨道的 TextTrackList 对象。         |
-| volume              | 设置或返回音频的音量。                              |
-### 方法
-| 方法           | 描述                                   |
-| :------------- | :------------------------------------- |
-| load()         | 重新加载音频元素。                     |
-| play()         | 开始播放音频。                         |
-| pause()        | 暂停当前播放的音频。                   |
-| addTextTrack() | 向音频添加新的文本轨道。               |
-| canPlayType()  | 检查浏览器是否能够播放指定的音频类型。 |
-### 事件
-| 方法           | 描述                                      |
-| :------------- | :---------------------------------------- |
-| addTextTrack() | 向音频/视频添加新的文本轨道。             |
-| canPlayType()  | 检测浏览器是否能播放指定的音频/视频类型。 |
-| load()         | 重新加载音频/视频元素。                   |
-| play()         | 开始播放音频/视频。                       |
-| pause()        | 暂停当前播放的音频/视频。                 |
+```html
+<audio controls src="/audio/demo.mp3"></audio>
+```
+
+## 常用属性
+
+- `src`
+- `controls`
+- `autoplay`
+- `loop`
+- `muted`
+- `preload`
+- `currentTime`
+- `duration`
+- `volume`
+
+## 常用方法
+
+```js
+audio.play();
+audio.pause();
+audio.load();
+```
+
+## 常见事件
+
+- `loadedmetadata`
+- `play`
+- `pause`
+- `timeupdate`
+- `ended`
+- `volumechange`
+
+## 注意事项
+
+- 现代浏览器通常限制自动播放，尤其是带声音的媒体。
+- 需要自动播放时，常见前提是 `muted`。
+
+## 总结
+
+`audio` 适合原生播放控制，复杂播放器则需要额外封装交互和状态管理。

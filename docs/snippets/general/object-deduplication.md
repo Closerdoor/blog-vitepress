@@ -1,57 +1,36 @@
 ---
-title: 对象去重
-author: Closerdoor
+title: 对象数组去重
 date: '2021-12-12'
 ---
 
-## 对象访问属性方法去重
+## 适用场景
+
+按对象某个字段去重，并保留首次出现的数据。
+
+## 最小示例
+
 ```js
-//  利用对象访问属性的方法，判断对象中是否存在key
-let newArr = [{
-      key: '01',
-      value: '乐乐'
-    },{
-      key: '02',
-      value: '博博'
-    },{
-      key: '03',
-      value: '淘淘'
-    },{
-      key: '04',
-      value: '哈哈'
-    },{
-      key: '01',
-      value: '乐乐'
-    }
-let obj = {};
-for (var i = 0; i < arr.length; i++) {
-    if (!obj[arr[i].key]) {
-    newArr.push(arr[i]);
-    obj[arr[i].key] = true;
-    }
+function dedupeBy(list, key) {
+  const seen = new Set();
+
+  return list.filter((item) => {
+    const value = item[key];
+    if (seen.has(value)) return false;
+    seen.add(value);
+    return true;
+  });
 }
-console.log(newArr);
-```
-## reduce方法去重
-```ts
-// 利用reduce方法遍历数组,reduce第一个参数是遍历需要执行的函数，第二个参数是item的初始值
-let person = [
-     {id: 0, name: "小明"},
-     {id: 1, name: "小张"},
-     {id: 2, name: "小李"},
-     {id: 3, name: "小孙"},
-     {id: 1, name: "小周"},
-     {id: 2, name: "小陈"},   
+
+const users = [
+  { id: 1, name: '小明' },
+  { id: 2, name: '小张' },
+  { id: 1, name: '小明-重复' },
 ];
 
-let obj = {};
-arr = arr.reduce((item, next) => {
-    if (!obj[next.key]) {
-    item.push(next);
-    obj[next.key] = true;
-    }
-    return item;
-}, []);
-console.log(arr);
-// (4) [{…}, {…}, {…}, {…}]0: {id: 0, name: "小明"}1: {id: 1, name: "小张"}2: {id: 2, name: "小李"}3: {id: 3, name: "小孙"}length: 4__proto__: Array(0)
+console.log(dedupeBy(users, 'id'));
 ```
+
+## 说明
+
+- 该写法保留第一条记录。
+- 如果要保留最后一条，改用 `Map` 覆盖同键值即可。

@@ -5,42 +5,77 @@ date: '2021-12-12'
 ---
 
 ## label
-是个inline标签。  
-for 属性规定 label 与id值一致的表单元素绑定。
+
+`label` 用于提升表单可用性和可访问性。
+
 ```html
 <label for="male">Male</label>
-<input type="radio" name="sex" id="male" value="male">
+<input id="male" type="radio" name="sex" value="male">
 ```
-## input控件常用属性
-| 常用属性    | 属性值       | 描述                              |
-| ----------- | ------------ | --------------------------------- |
-| type        | 见下表       | 控制input的类型                   |
-| name        | 自定义       | 控件名称 作为提交数据时的 key     |
-| value       | 自定义或输入 | input控件中的默认或用户输入的文本 |
-| size        | 正整数       | input在页面中的显示宽度           |
-| checked     | checked      | 定义选择控件默认被选中的项        |
-| maxlength   | 正整数       | 规定控件容许输入的最大字符数      |
-| required    | required     | 必填                              |
-| readonly    | readonly     | 内容只读                          |
-| placeholder | 文本         | 用户输入提示文本                  |
-| multiple    | multiple     | 文件上传可选多文件                |
-## textarea
-```html
-<textarea cols="每行中的字符数" rows="显示的行数">
-  文本内容
-</textarea>
-```
-`resize:auto(默认) | none(不能调整尺寸) | both(可调整宽高) | horizontal(可调整宽度) | vertical(可调整高度);`
 
-### textarea的DOM操作
-```js
-//e.preventDefault() 会阻止input的默认行为，包括单选框和多选框，
-//阻止默认行为后，点击单选框，无法选中它，但是checked值会变成true
-node.addEventListener('input',function(e){
-  console.log(this.innerText); //获取不到
-  console.log(this.innerHTML); //获取初始的内容值
-  console.log(this.value); //获取动态内容值
-  //innerText可以给textarea赋值 但是无法获取
-  e.target.innerText = '1234'
-})
+## input 常用属性
+
+| 属性 | 说明 |
+| --- | --- |
+| `type` | 输入类型 |
+| `name` | 提交字段名 |
+| `value` | 默认值或当前值 |
+| `checked` | 单选/多选默认选中 |
+| `maxlength` | 最大长度 |
+| `required` | 必填 |
+| `readonly` | 只读 |
+| `placeholder` | 占位提示 |
+| `multiple` | 多文件或多值 |
+
+## `form` 常用属性
+
+- `action`：提交目标地址。
+- `method`：提交方式，常见为 `get`、`post`。
+
+```html
+<form action="/submit" method="post">
+  <label for="name">Name:</label>
+  <input id="name" name="name" type="text" required>
+  <button type="submit">提交</button>
+</form>
 ```
+
+## 单选和多选
+
+同一组单选框要共用相同的 `name`：
+
+```html
+<label><input type="radio" name="sex" value="male"> 男</label>
+<label><input type="radio" name="sex" value="female"> 女</label>
+```
+
+## textarea
+
+```html
+<textarea rows="4" cols="30"></textarea>
+```
+
+```css
+textarea {
+  resize: vertical;
+}
+```
+
+## 读取值
+
+```js
+textarea.addEventListener('input', (event) => {
+  console.log(event.target.value);
+});
+```
+
+## 注意事项
+
+- 表单值优先通过 `value` 读取，不要用 `innerText`。
+- `preventDefault()` 会阻止部分控件默认行为，使用前要确认影响范围。
+
+浏览器原生校验常配合 `required`、`pattern`、`:valid`、`:invalid` 使用。
+
+## 总结
+
+表单开发关注两点：语义绑定和状态读取。

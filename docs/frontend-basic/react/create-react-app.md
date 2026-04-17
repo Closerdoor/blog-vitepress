@@ -1,35 +1,36 @@
 ---
-title: create-react-app
+title: Create React App
 author: Closerdoor
 date: '2022-06-14'
 ---
 
-## create-react-app 环境搭建
+## 是什么
+
+Create React App 曾是 React 官方推荐的脚手架，但现在已不再是新项目首选。当前更常见的是 Vite、Next.js 或框架官方方案。
+
+## 基本创建方式
+
+```bash
+npx create-react-app my-app
 ```
-npx create-react-app project-name
-npm i redux -S
-npm i react-redux -S //把react-redux进行整合
-npm i redux-thunk -S //异步更新redux里的数据
-npm i react-router-dom -S //路由
-npm i axios -S 
-npm i antd -S // UI库
+
+## 历史常见依赖
+
+```bash
+npm install redux react-redux react-router-dom axios
 ```
-```
-{
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^13.3.0",
-    "@testing-library/user-event": "^13.5.0",
-    "antd": "^3.1.4",
-    "axios": "^0.27.2",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "react-redux": "^5.0.6",
-    "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.0",
-    "redux": "^3.7.2",
-    "redux-thunk": "^2.2.0",
-    "web-vitals": "^2.1.4"
-  },
-}
-```
+
+## 当前建议
+
+- 练习基础 React：优先用 Vite。
+- 需要 SSR、路由、服务端能力：优先看 Next.js。
+- 维护旧项目：继续理解 CRA 的目录结构和构建链即可。
+
+## 注意事项
+
+- CRA 启动慢、构建链较重。
+- 旧文档中常见的 React 16、React Router 4、Ant Design 3 配套版本已经明显过时。
+
+## 总结
+
+CRA 现在更适合作为历史项目知识，而不是新项目标准方案。

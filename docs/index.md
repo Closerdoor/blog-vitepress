@@ -2,25 +2,25 @@
 layout: home
 
 hero:
-  name: Javascript 基础补完计划
-  text: Javascript基础知识
+  name: 前端技术笔记
+  text: 简洁、聚焦、可检索的中文前端知识库
   image:
     src: /logo.jpg
-    alt: Closerdoor Blog
-  tagline: 专注写作前端博客，记录日常所得。
+    alt: 前端技术笔记
+  tagline: 覆盖前端基础、工程化、Node.js、代码片段与专题整理。
   actions:
     - theme: brand
-      text: 开始
+      text: 开始阅读
       link: /frontend-basic/html-css/meta
     - theme: alt
-      text: GitHub
-      link: https://github.com/Closerdoor/blog-vitepress
+      text: 查看专题
+      link: /question/resume
 
 features:
-  - title: A Blog
-    details: 专注写作前端博客，记录日常所得。
-  - title: For Me
-    details: 不积跬步，无以至千里。
-  - title: For Interview
-    details: 广州，持续整理前端知识与面试内容。
+  - title: 前端基础
+    details: 系统整理 HTML、CSS、JavaScript、Vue、React、TypeScript 与移动端开发。
+  - title: 工程与实践
+    details: 收录 Webpack、Git、Node.js、常用库、样式工具与高频代码片段。
+  - title: 专题整理
+    details: 集中归档面试笔记、资料摘录、项目实践与历史教程，便于持续维护。
 ---

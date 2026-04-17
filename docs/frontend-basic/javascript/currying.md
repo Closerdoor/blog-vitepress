@@ -4,37 +4,65 @@ author: Closerdoor
 date: '2022-06-13'
 ---
 
-## 柯里化
-柯里化是将一个多参数函数转换成多个单参数函数，也就是将一个 n 元函数转换成 n 个一元函数。
+## 是什么
+
+柯里化是把一个接收多个参数的函数，拆成一系列每次接收部分参数的函数。
+
+## 用途
+
+- 复用部分参数。
+- 生成更具体的业务函数。
+- 与函数组合、管道调用配合使用。
+
+## 示例
+
 ```js
-function currying(fn) {
-  let args = [].slice.call(arguments,1);
-  let inlay =  function() {
-    if(arguments.length === 0) {
-      return fn.apply(this, args)
-    }
-    args.push.apply(args, arguments)
-    return inlay
-  }
-  return inlay
+function curryAdd(a) {
+  return function (b) {
+    return function (c) {
+      return a + b + c;
+    };
+  };
 }
 
-let result = currying(fn);
+curryAdd(1)(2)(3); // 6
 ```
-## 通道函数pipe
-将一系列方法自由组合，生成一个执行函数，再将传入的参数按照方法的顺序执行。
+
+## 通用实现
+
 ```js
-let data = thing;
-let fn1 = function() {};
-let fn2 = function() {};
-let fn3 = function() {};
-function pipe() {
-  let args = [].slice.call(arguments);
-  return function(data){
-    return args.reduce((acc,curr)=> {
-      acc = curr(acc);
-      return acc;
-    },data)
-  }
+function curry(fn, ...args) {
+  return (...rest) => {
+    const allArgs = [...args, ...rest];
+
+    if (allArgs.length >= fn.length) {
+      return fn(...allArgs);
+    }
+
+    return curry(fn, ...allArgs);
+  };
+}
+
+function sum(a, b, c) {
+  return a + b + c;
+}
+
+curry(sum)(1)(2)(3); // 6
+```
+
+## pipe
+
+```js
+function pipe(...fns) {
+  return (value) => fns.reduce((acc, fn) => fn(acc), value);
 }
 ```
+
+## 注意事项
+
+- 柯里化适合参数稳定、复用频繁的场景。
+- 过度使用会让代码调用链过长，反而降低可读性。
+
+## 总结
+
+柯里化的价值不在“写得更函数式”，而在于提前固定上下文，降低重复传参。

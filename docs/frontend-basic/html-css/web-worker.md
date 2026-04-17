@@ -1,119 +1,64 @@
 ---
-title: 多线程与通知
+title: Web Worker 与通知
 author: Closerdoor
 date: '2022-06-24'
 ---
 
-## worker
-### 主线程内容 work.html
-```js
-//遵守同源政策的url
-let worker = new Worker('worker.js');
-//向 Worker 线程发送消息。
-worker.postMessage('Hello World');
-worker.postMessage({method: 'echo', args: ['Work']});
+## Web Worker 是什么
 
-worker.onmessage = function (event) {
-  console.log('主线程接收的消息' + event.data);
-  doSomething();
+Web Worker 允许在独立线程中执行脚本，避免复杂计算阻塞主线程 UI。
+
+## 基本用法
+
+### 主线程
+
+```js
+const worker = new Worker('/worker.js');
+
+worker.postMessage({ type: 'start' });
+
+worker.onmessage = (event) => {
+  console.log('message from worker:', event.data);
+};
+```
+
+### Worker 线程
+
+```js
+self.onmessage = (event) => {
+  self.postMessage({ ok: true, payload: event.data });
+};
+```
+
+## 可做什么
+
+- 大数据计算
+- 数据格式转换
+- 图像处理
+- 不依赖 DOM 的耗时任务
+
+## 限制
+
+- Worker 不能直接操作 DOM。
+- 线程间通信主要依赖 `postMessage`。
+
+## Notification
+
+```js
+await Notification.requestPermission();
+
+if (Notification.permission === 'granted') {
+  new Notification('新通知', {
+    body: '任务已完成',
+  });
 }
-function doSomething() {
-  // 执行任务
-  worker.postMessage('Work done!');
-}
-
-worker.terminate()//完成任务后,终止 Worker 线程。
-```
-### 子线程内容 worker.js
-> - self.name： Worker 的名字。该属性只读，由构造函数指定。
-> - self.onmessage：指定`message`事件的监听函数。
-> - self.onmessageerror：指定 messageerror 事件的监听函数。发送的数据无法序列化成字符串时，会触发这个事件。
-> - self.close()：关闭 Worker 线程。
-> - self.postMessage()：向产生这个 Worker 线程发送消息。
-> - self.importScripts()：加载 JS 脚本。
-
-```js
-//加载脚本
-importScripts('script1.js', 'script2.js');
-self.addEventListener('message', function (e) {
-  //向主线程发送消息
-  self.postMessage('You said: ' + e.data);
-
-  self.close();//关闭线程
-}, false);
-```
-## 同页面web worker
-### 方式一
-```html
-<script id="worker" type="app/worker">
-  addEventListener('message',(e)=>{
-    console.log(e)
-    console.log(self)
-    self.postMessage(e.data.age * 2)
-  })
-</script>
-<script>
-  let n = document.querySelector('#worker')
-  console.log(n)
-  console.log(n.innerHTML)
-  console.log(n.innerText)
-  console.log(n.textContent)
-  let blob = new Blob([n.textContent]);
-  let url = URL.createObjectURL(blob)
-  let worker = new Worker(url);
-  worker.postMessage({name:123,age:18})
-  worker.onmessage = function(event) {
-    console.log('主线程接收到的数据',event)
-  }
-</script>
-```
-### 方式二
-```js
-  let blob = new Blob([`(${f.toString()})()`]);
-  let url = URL.createObjectURL(blob)
-  let worker = new Worker(url);
-  worker.postMessage({name:123,age:18})
-  worker.onmessage = function(event) {
-    console.log('主线程接收到的数据',event)
-  }
-  function f() {
-    addEventListener('message',(e)=>{
-      console.log(e)
-      console.log(self)
-      self.postMessage(e.data.age * 2)
-    })
-  }
 ```
 
-## 通知 Notification
-```html
-<button id="1">请求通知权限</button>
-<button id="2">发送通知</button>
-<script>
-const btn1 = document.getElementById('1')
-const btn2 = document.getElementById('2')
-console.log(btn1,btn2)
-btn1.addEventListener('click',function(e) {
-  Notification.requestPermission()
-})
-btn2.addEventListener('click',function(e) {
-  let note = new Notification('新通知',{
-    dir: 'rtl', //文字的方向； auto（自动）, ltr（从左到右）, rtl（从右到左）
-    lan:'zh-CN',
-    body:'你好,你中了500w大奖,请来欢乐豆大厅兑换',
-    // icon: img  一个图片的URL，将被用于显示通知的图标。
-    // tag: 赋予通知一个ID，以便在必要的时候对通知进行刷新、替换或移除。
-  })
-  note.onshow = function () {
-    console.log('通知')
-  }
-  note.onclick = function () {
-    console.log('用户点击了通知');
-  }
+## 注意事项
 
-  note.onclose = function () {
-    console.log('用户关闭了通知')
-  }
-})
-</script>
-```
+- 通知权限需要用户授权。
+- 实际生产中，消息推送往往要结合 Service Worker。
+
+## 总结
+
+Web Worker 解决主线程阻塞，Notification 解决用户提醒，两者经常一起出现在前端能力扩展场景中。

@@ -3,136 +3,149 @@ title: 正则表达式
 author: Closerdoor
 date: '2021-12-12'
 ---
-## new RegExp()
-```js
-//以下三种等价
-/ab+c/i; //字面量形式
-new RegExp('ab+c', 'i'); // 首个参数为字符串模式的构造函数
-new RegExp(/ab+c/, 'i'); // 首个参数为常规字面量的构造函数
 
-//以下是等价的：
-//当使用构造函数创造正则对象时，需要常规的字符转义规则（在前面加反斜杠 \）。
-var re = new RegExp("\\w+");
-var re = /\w+/;
-```
-## 正则表达式方法
-### test
-注意：当正则表达式中有g全局匹配时，用test去匹配后,每次test都会保留上次匹配的位置——即lastIndex(和exec一样)，所以此时要么把reg.lastIndex = 0重新设置，要么去掉g，否则会出现错误
-```js
-let reg = /\d/;
-reg.test(str) //返回true/false
-```
-### exec
-```js
-let reg = /\d/;
-reg.exec(str)
-```
-在字符串中执行匹配搜索，返回首次匹配结果`数组`,
-## 字符串方法
-### match
-`str.match(/\d/g)`
-返回RegExp匹配的包含全部`字符串`的数组或`null`
-### replace
-`str.replace(/\d/,newStr)`
-用`newStr`替换RegExp匹配结果，并返回新字符串
-### split
-```js
-let str = '阿斯1顿发2发疯的3';
-str.split(/\d/);
-```
-返回字符串按指定RegExp拆分的数组
-### search
-`str.search(/\d/g)`
-返回RegExp匹配字符串首次出现的`位置`
-## 语法
-### 修饰符modifiers
-`var patt =  /pattern/igm;`
-- `i` `忽略大小写`匹配
-- `g` `全局匹配`，默认只匹配第一个元素，就不再进行匹配
-- `m` 执行`多行匹配`
-## 模板pattern
-```js
-let reg = /abc/; //匹配abv
-let reg = /abc|qwe|zxc/; //匹配`abc`或`qwe`或`zxc`字符
-//[]
-let reg = /[abc]/; //匹配abc之中的任何一个字符
-let reg = /[^abc]/;//匹配非a非b非c字符的
-let reg = /[0-9]/; //匹配 0至9 之间的数字
-let reg = /[a-z]/; //匹配 小写a至小写z 的字符
-let reg = /[A-Z]/; //匹配 大写A至大写Z 的字符
-let reg = /[\u4e00-\u9fa5]/; //匹配中文
-//元字符
-let reg = /./;  //匹配单个字符，除了换行和行结束符
-let reg = /\w/; //匹配数字字母下划线 [A-Za-z0-9_]
-let reg = /\W/; //匹配非数字字母下划线 [^A-Za-z0-9_]
-let reg = /\d/; //匹配数字 [0-9]
-let reg = /\D/; //匹配非数字 [^0-9]
-let reg = /\s/; //匹配空白字符（空格）
-let reg = /\S/; //匹配非空格字符
-let reg = /\b/; //匹配单词边界(除了数字字母下划线都算单词边界, 。 ?等)
-let reg = /\B/; //匹配非单词边界
-let reg = /\n/; //匹配换行符
-//量词
-let reg = /n?/;//匹配0个或一个n的字符串 n{0,1}
-let reg = /n*/;//匹配0个或多个字符串(任意个) n{0,}
-let reg = /n+/;//匹配至少一个n字符串 n{1,}
-let reg = /n{X}/;//匹配包含X个n的序列的字符串
-let reg = /n{X,Y}/;//匹配包含至少X或至多Y个n的序列的字符串
-let reg = /n{x,}/;//-匹配至少X个n的序列字符串
+## 创建方式
 
-let reg = /^n/;//匹配以n开头的字符串
-let reg = /n$/;//匹配以n结尾的字符串
-//高级
-let reg = /\d+(?=\.)/;//先行断言 x(?=y) 当x后面是y的时候匹配x 
-let reg = /(?<=\d+\.)(\d+)/;//后行断言 (?<=y)x 当x前面是y的时候匹配x
-let reg = /(?<=^[1-9]\d*\.)(\d+)/;//获取整数位大于0的数值的小数位
-let reg = /海(?!牙)/;//正向否定查找 x(?!y) 只有当x后面跟着不是y的时候匹配x
-let reg = /(?<!海)牙/;//反向否定查找 (?<!y)x  只有当x前面跟着不是y的时候匹配x
-//() 捕获模式
-
-//(?:)非捕获模式
-let reg = /(abc)(?:\d+)/;
+```js
+/ab+c/i;
+new RegExp('ab+c', 'i');
 ```
 
-## 案例与问题
-正则匹配cookie
-正则匹配url
-正则匹配小数
+## 常用方法
 
-### 解析整型值
+### RegExp 方法
+
 ```js
-let filterInt = function (value) {
-  if(/^(\-|\+)?([0-9]+|Infinity)$/.test(value))
-    return Number(value);
-  return NaN;
+/\d/.test('abc1'); // true
+/\d/.exec('abc1'); // ['1']
+```
+
+### String 方法
+
+```js
+'abc123'.match(/\d+/);
+'abc123'.replace(/\d+/, '');
+'a1b2c3'.split(/\d/);
+'abc123'.search(/\d/);
+```
+
+## 常见元字符
+
+```js
+\d // 数字
+\w // 字母、数字、下划线
+\s // 空白字符
+.  // 任意字符（默认不含换行）
+^  // 开头
+$  // 结尾
+```
+
+## 量词
+
+```js
+a? // 0 或 1 次
+a* // 0 次或多次
+a+ // 1 次或多次
+a{2} // 2 次
+a{2,4} // 2 到 4 次
+```
+
+## 捕获与分组
+
+```js
+const result = '2026-04-17'.match(/(\d{4})-(\d{2})-(\d{2})/);
+// result[1] => 2026
+```
+
+## 示例
+
+### 校验整数
+
+```js
+function filterInt(value) {
+  return /^[-+]?\d+$/.test(value) ? Number(value) : NaN;
 }
-console.log(filterInt('421'));               // 421
-console.log(filterInt('-421'));              // -421
-console.log(filterInt('+421'));              // 421
-console.log(filterInt('Infinity'));          // Infinity
-console.log(filterInt('421e+0'));            // NaN
-console.log(filterInt('421hop'));            // NaN
-console.log(filterInt('hop1.61803398875'));  // NaN
-console.log(filterInt('1.61803398875'));     // NaN
 ```
 
-### 统计出 英文字母、空格、数字和其它字符 的个数。
+### 保留两位小数
+
 ```js
-//英文字母
-let reg1 = /[a-z]/gi;
-//空格
-let reg2 = /[\s]/gi;
-//数字
-let reg3 = /[\d]/gi;
-//其它字符
-let reg4 = /[^\da-z\s]/gi;
+const value = 12.3456;
+value.toFixed(2); // '12.35'
 ```
-### 小数点后保留两位小数
+
+## 注意事项
+
+- 带 `g` 标记的正则在重复 `test` 时会受 `lastIndex` 影响。
+- 正则适合文本模式匹配，不适合复杂语义解析。
+
+## `lastIndex` 陷阱
+
+带全局标记 `g` 的正则在连续调用 `test()` 或 `exec()` 时，会从上一次匹配结束位置继续查找。
+
 ```js
-//方法一
-string.toFixed(2)
-//方法二
-num = Math.floor(num * 100) / 100;
-//方法三-正则匹配
-num.toString().match(/^\d+(?:\.\d{0,2})?/)
+const reg = /mrlp/gi;
+
+reg.test('3206064928:MRLP:3206064928'); // true
+reg.lastIndex; // 15
+
+reg.test('MRLP'); // false，受 lastIndex 影响
+reg.lastIndex = 0;
+reg.test('MRLP'); // true
 ```
+
+## `replace` 回调
+
+`replace` 的第二个参数除了字符串，还可以是函数：
+
+```js
+'我是{{name}}，今年{{age}}岁'.replace(/\{\{(.*?)\}\}/g, (match, key) => {
+  const data = { name: 'leaf', age: 20 };
+  return data[key.trim()];
+});
+```
+
+## 常见案例
+
+### 首字母大写
+
+```js
+function upperCaseWords(str) {
+  return str.toLowerCase().replace(/(\s|^)[a-z]/g, (s) => s.toUpperCase());
+}
+```
+
+### 驼峰转换
+
+```js
+function cssStyle2DomStyle(name) {
+  return name.replace(/-(.)/g, (match, char, index) => {
+    return index === 0 ? char : char.toUpperCase();
+  });
+}
+
+cssStyle2DomStyle('-webkit-border-image');
+// webkitBorderImage
+```
+
+### `rgb()` 转十六进制
+
+```js
+function rgb2hex(value) {
+  return value.replace(/^rgb\((\d+)\s*,\s*(\d+)\s*,\s*(\d+)\)$/i, (match, r, g, b) => {
+    const hex = (n) => String(Number(n).toString(16)).padStart(2, '0');
+    return `#${hex(r)}${hex(g)}${hex(b)}`;
+  });
+}
+```
+
+### 邮箱和手机号校验
+
+```js
+const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-]+)+$/;
+const regMobile = /^(0|86|17951)?(13\d|15\d|17[678]|18\d|14[57])\d{8}$/;
+```
+
+## 总结
+
+正则的关键不是语法全记住，而是能准确描述边界、重复次数和分组关系。

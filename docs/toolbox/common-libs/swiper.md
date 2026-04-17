@@ -1,47 +1,65 @@
 ---
-title: swiper
+title: Swiper 使用笔记
 author: Closerdoor
 date: '2021-12-12'
 ---
 
-## swiper@7.4.1
-### 安装和引入
-`npm install swiper`
-```js
-//注意查看package.json文件
-import "swiper/css/bundle";
-import "swiper/bundle";
-import "swiper/css";
-import "swiper/css/grid";
-import "swiper/css/thumbs";
-import Swiper from "swiper";
+`Swiper` 是常用的触摸滑动组件库，适合轮播图、卡片切换和多端滑动交互。
+
+## 安装
+
+```bash
+npm install swiper
 ```
-### 修改箭头的大小和样式
+
+## 基本引入
+
+```js
+import Swiper from 'swiper'
+import { Navigation } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/navigation'
+```
+
+## 带导航按钮的示例
+
 ```html
-<!-- 如果需要将箭头放在swiper方面，在最外面套一个div并加上相对定位 -->
-<div class="swiper-father relative">
+<div class="swiper-wrapper-box">
   <div class="swiper">
-      <div class="swiper-wrapper">
-          <div class="swiper-slide">Slide 1</div>
-          <div class="swiper-slide">Slide 2</div>
-          <div class="swiper-slide">Slide 3</div>
-      </div>
+    <div class="swiper-wrapper">
+      <div class="swiper-slide">Slide 1</div>
+      <div class="swiper-slide">Slide 2</div>
+      <div class="swiper-slide">Slide 3</div>
+    </div>
   </div>
+
   <div class="swiper-button-prev"></div>
   <div class="swiper-button-next"></div>
 </div>
-<script language="javascript"> 
-  var mySwiper = new Swiper('.swiper', {
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-  });
-</script>
-<style type="text/css">
-  .swiper{
-    --swiper-navigation-color: #00ff33;/* 按钮颜色 */
-    --swiper-navigation-size: 30px;/* 按钮大小，设置为0时可自定义样式 */
-  }
-</style>
 ```
+
+```js
+const swiper = new Swiper('.swiper', {
+  modules: [Navigation],
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+})
+```
+
+```css
+.swiper-wrapper-box {
+  position: relative;
+}
+
+.swiper {
+  --swiper-navigation-color: #00ff33;
+  --swiper-navigation-size: 30px;
+}
+```
+
+## 说明
+
+- 调整导航按钮大小时，可直接覆盖 `--swiper-navigation-size`。
+- 自定义箭头布局时，通常将按钮放在外层并为容器设置 `position: relative`。

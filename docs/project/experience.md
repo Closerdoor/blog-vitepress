@@ -1,37 +1,78 @@
 ---
 title: 项目经历
-author: Closerdoor
 date: '2021-12-12'
+category: project
+description: 现有项目材料的结构化整理记录。
 ---
 
-## 项目经历
+## 整理说明
 
-### 港航后台管理系统
-![An image](./images/ganghang1.png)
+- 原始内容以截图为主，文字信息较少。
+- 本页按项目名称整理为简版项目笔记，便于后续继续补充。
 
-![An image](./images/ganghang2.png)
+## 港航后台管理系统
 
-![An image](./images/ganghang3.png)
+### 已知信息
+- 属于后台管理类项目。
+- 当前资料主要为界面截图。
 
-![An image](./images/ganghang4.png)
+### 建议补充维度
+- 业务目标：服务的具体流程或角色。
+- 技术栈：框架、组件库、权限方案、图表方案。
+- 个人职责：页面开发、组件封装、接口联调、权限控制等。
+- 项目结果：交付范围、性能优化、效率提升。
 
-![An image](./images/ganghang5.png)
+### 现有材料
+- `./images/ganghang1.png`
+- `./images/ganghang2.png`
+- `./images/ganghang3.png`
+- `./images/ganghang4.png`
+- `./images/ganghang5.png`
 
-### E生态硬件连接项目
-![An image](./images/E1.jpg)
+## E 生态硬件连接项目
 
-![An image](./images/E2.png)
+### 已知信息
+- 项目名称显示与硬件连接相关。
+- 当前资料仅保留若干界面截图。
 
-![An image](./images/E3.jpg)
+### 建议补充维度
+- 是否涉及蓝牙、串口、WebSocket 或设备协议。
+- 前端职责是配置管理、状态监控还是可视化展示。
+- 异常处理、重连策略、设备兼容性方案。
 
-![An image](./images/E4.png)
+### 现有材料
+- `./images/E1.jpg`
+- `./images/E2.png`
+- `./images/E3.jpg`
+- `./images/E4.png`
 
-### 跑船平台
-![An image](./images/ship1.jpg)
-![An image](./images/ship2.jpg)
-<img src="./images/ship3.jpg" width="300">
-<img src="./images/ship4.jpg" width="300">
-<img src="./images/ship5.jpg" width="300">
+## 跑船平台
 
-### platform-im插件
-[v-im基于JS的超轻量级聊天软件](https://gitee.com/alyouge/V-IM)
+### 已知信息
+- 项目名称显示与航运或订单业务相关。
+- 当前资料以多端界面截图为主。
+
+### 建议补充维度
+- 业务流程：下单、支付、运单、结算等。
+- 终端范围：PC、H5、小程序或 App。
+- 难点：状态流转、支付回调、地图轨迹、权限分层。
+
+### 现有材料
+- `./images/ship1.jpg`
+- `./images/ship2.jpg`
+- `./images/ship3.jpg`
+- `./images/ship4.jpg`
+- `./images/ship5.jpg`
+
+## platform-im 插件
+
+### 已知信息
+- 已保留外部链接，说明项目与即时通讯插件相关。
+
+### 参考链接
+- [v-im 基于 JS 的轻量级聊天软件](https://gitee.com/alyouge/V-IM)
+
+### 建议补充维度
+- 插件能力边界：消息收发、会话管理、断线重连、已读回执。
+- 使用方式：SDK、组件还是独立页面。
+- 封装方式与接入成本。

@@ -1,79 +1,93 @@
 ---
-title: 模块化
+title: JavaScript 模块化
 author: Closerdoor
 date: '2023-04-07'
 ---
 
-## AMD(require.js)
-用法
-```js
-//name表示定义的模块名字，depend表示该模块需要依赖的模块名
-define(name,[depend],function(){
-  return
-})
-//test模块需要jquery和mycode模块的支持
-define('test',['jquery','mycode'],function(jq,my){
-  return
-})
+模块化的核心目标是隔离作用域、管理依赖并提升代码复用性。前端和 Node.js 常见的模块体系主要包括 AMD、CMD、CommonJS 与 ES Module。
 
-require.config({
-  baseUrl:'/',//默认路径
-  paths: {//模块别名：模块路径(注意路径最后不用加.js)
-    "jquery": "modules/jquery-1.12.1",
-    "demo": "./app/demo",
+## 模块体系对比
+
+| 体系 | 典型场景 | 导入方式 | 特点 |
+| :-- | :-- | :-- | :-- |
+| AMD | 早期浏览器 | `define` / `require` | 依赖前置，适合浏览器异步加载 |
+| CMD | 早期浏览器 | `define` / `require` | 依赖就近，代表实现是 Sea.js |
+| CommonJS | Node.js | `require()` | 同步加载，生态成熟 |
+| ES Module | 现代浏览器、Node.js、构建工具 | `import` / `export` | 官方标准，静态分析友好 |
+
+## AMD
+
+代表工具是 RequireJS。
+
+```js
+define('test', ['jquery', 'mycode'], function ($, mycode) {
+  return {
+    run() {
+      mycode.init()
+      $('.wrap').show()
+    },
   }
 })
 ```
-```js
-//简单实现require()函数
-function require(path, callback) {
-  let script = document.createElement('script');
-  script.src = path;
 
-  // xhtml1.0 DTD下 scirpt的async属性值必须是async
-  script.async = 'async';
-  document.body.appendChild(script);
-  script.onload = function() {
-    callback && callback();
-  }
-};
-```
-## CMD(sea.js)
-用法
+## CMD
+
+代表工具是 Sea.js。
+
 ```js
-seajs.config({
-  // base:"./",
-  alias: {
-    "jquery": './js/jquery-1.12.1',
-  }
-});
-seajs.use(['jquery', './app/cmd'], function ($, c) {
-  console.log(c.add(1, 2), $)
-  $('.wrap').css({
-    backgroundColor: 'red'
-  })
-})
-//单独的js文件
-define(function(require,exports,module) {
-  //需要用到其它模块的时候，用require引入
-  var $ = require('jquery');
-  //exports是一个对象，为该模块的默认导出项
-  //exports.a = 123
+define(function (require, exports, module) {
+  const $ = require('jquery')
+
   module.exports = {
-    add: function(a,b) {
-      return a + b;
-    }
+    add(a, b) {
+      return a + b
+    },
   }
 })
 ```
-## commonJS
-文件就是模块，模块就是文件
-1、导入模块 require(文件路径)
-2、模块声明 每个js文件都是模块
-3、模块导出暴露模块 module.exports = {}
 
-`CommonJS`规范加载模块是同步的，也就是说，加载完成才执行后面的操作。`Node.js`主要用于服务器编程，模块都是存在本地硬盘中，加载比较快，所以`Node.js`采用`CommonJS`规范。
+## CommonJS
 
-`CommonJS`规范分为三部分：`module`(模块标识)、`require`(模块引用)、`exports`(模块定义)。 `module`变量在每个模块内部，就代表当前模块； `exports`属性是对外的接口，用于导出当前模块的方法或变量；`require()`用来加载外部模块，读取并执行js文件，返回该模块的`exports`对象。
-## ES6 Module
-import/export
+Node.js 传统模块方案，文件即模块。
+
+```js
+const math = require('./math')
+
+module.exports = {
+  sum(a, b) {
+    return a + b
+  },
+}
+```
+
+要点：
+
+- 使用 `require()` 导入。
+- 使用 `module.exports` 或 `exports` 导出。
+- 加载是同步的，适合本地文件系统环境。
+
+模块解析通常会依次尝试文件、目录下的 `package.json`、目录下的 `index.js`。
+
+## ES Module
+
+现代 JavaScript 标准模块方案。
+
+```js
+import { sum } from './math.js'
+
+export function total(list) {
+  return list.reduce((acc, item) => acc + item, 0)
+}
+```
+
+要点：
+
+- 使用 `import` / `export`。
+- 支持静态分析、Tree Shaking 与顶层 `await`。
+- Node.js 中可通过 `"type": "module"` 或 `.mjs` 启用。
+
+## 选择建议
+
+- 新项目优先使用 ES Module。
+- Node.js 旧项目仍可继续使用 CommonJS。
+- AMD 与 CMD 主要用于维护历史项目，新增项目通常不再采用。

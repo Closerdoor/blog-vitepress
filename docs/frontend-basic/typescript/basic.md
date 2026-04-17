@@ -1,51 +1,111 @@
 ---
-title: 环境搭建与编译执行
+title: TypeScript 环境搭建与编译执行
 author: Closerdoor
 date: '2021-12-12'
 ---
 
-## 需要先安装node.js
-## 安装 `TypeScript` 编译器
-通过 `NPM` 包管理工具安装 `TypeScript` 编译器
-```shell
-npm i -g typescript
+## 是什么
+
+TypeScript 是 JavaScript 的超集，核心能力是静态类型检查与更好的工程化支持。
+
+## 安装
+
+通常不建议全局安装，项目内安装更稳妥：
+
+```bash
+npm install -D typescript
 ```
 
-安装完成以后，我们可以通过命令 `tsc` 来调用编译器
-```shell
-# 查看当前 tsc 编译器版本
-tsc -v
+查看版本：
+
+```bash
+npx tsc -v
 ```
+
 ## 编译执行
 
-使用我们安装的 `TypeScript` 编译器 `tsc` 对 `.ts` 文件进行编译
-```shell
-tsc ./src/test.ts
+编译单个文件：
+
+```bash
+npx tsc ./src/index.ts
 ```
 
-默认情况下会在当前文件所在目录下生成同名的 `js` 文件
+默认会生成同名 `.js` 文件。
 
-## 编译配置文件
+直接运行 `.ts` 文件时，也常用 `ts-node`：
 
-我们可以把编译的一些选项保存在一个指定的 `json` 文件中，默认情况下 `tsc` 命令运行的时候会自动去加载运行命令所在的目录下的 `tsconfig.json` 文件，配置文件格式如下
+```bash
+npm install -D ts-node
+npx ts-node ./src/index.ts
+```
 
-```json
-{
-	"compilerOptions": {
-		"outDir": "./dist",//指定编译文件输出目录
-		"target": "ES2015",//指定编译的代码版本目标，默认为 `ES3`
-    "watch": true,//在监听模式下运行，当文件发生改变的时候自动编译
-	},
-  // ** : 所有目录（包括子目录）
-  // * : 所有文件，也可以指定类型 *.ts
-  "include": ["./src/**/*"]
+## 类型注解
+
+```ts
+let num: number = 18;
+let str: string = 'hello';
+let isDone: boolean = false;
+let u: undefined = undefined;
+let n: null = null;
+```
+
+## 数组、对象、接口
+
+```ts
+const names: string[] = ['a', 'b'];
+
+const person: {
+  name: string;
+  age: number;
+} = {
+  name: 'Jack',
+  age: 18,
+};
+
+interface IUser {
+  name: string;
+  age: number;
+  sayHi: () => void;
 }
 ```
 
-有了单独的配置文件，我们就可以直接运行
+## DOM 类型断言
 
-```shell
-tsc
+默认拿到的 DOM 节点类型比较宽，访问特定属性时常用断言：
+
+```ts
+const img = document.querySelector('#image') as HTMLImageElement;
+console.log(img.src);
 ```
 
-### 指定加载的配置文件
+## tsconfig.json
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "strict": true,
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*"]
+}
+```
+
+## 常用命令
+
+```bash
+npx tsc
+npx tsc --watch
+npx tsc -p ./tsconfig.json
+```
+
+## 注意事项
+
+- `watch` 是命令行参数，不应写在 `compilerOptions` 中。
+- 新项目通常建议开启 `strict`。
+- 在打包项目里，编译往往交给 Vite、Webpack 或构建工具链处理。
+
+## 总结
+
+学习 TypeScript 的第一步是先把编译链路跑通，再逐步理解类型系统。

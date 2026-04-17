@@ -1,49 +1,43 @@
 ---
-title: touch 事件
+title: Touch 事件
 author: Closerdoor
 date: '2021-12-12'
 ---
 
-## touch
-- touchstart 手指触摸屏幕时触发，即使已经有手指在屏幕上也会触发。
-- touchmove 手指在屏幕滑动时触发。
-- touchend 手指从屏幕时移开时触发。
-### event
-```
-touches   屏幕上所有手指列表 
-targetTouches   在当前DOM标签上手指的列表
-changedTouches   涉及当前事件的手指的列表
-//event属性
-clientX      触摸目标在浏览器中的x坐标 
-clientY      触摸目标在浏览器中的y坐标
-identifier    标识触摸的唯一ID。  从0开始给手指编号 ... 
-pageX      触摸目标在当前DOM中的x坐标
-pageY      触摸目标在当前DOM中的y坐标
-screenX      触摸目标在屏幕中的x坐标
-screenY      触摸目标在屏幕中的y坐标
-target      触摸的DOM节点目标。
-```
+## 常见事件
+
+- `touchstart`
+- `touchmove`
+- `touchend`
+- `touchcancel`
+
+## 事件对象
+
+- `touches`：当前屏幕上的所有触点。
+- `targetTouches`：当前目标元素上的触点。
+- `changedTouches`：本次事件变化的触点。
+
+单个触点常见属性：
+
+- `clientX`、`clientY`
+- `pageX`、`pageY`
+- `screenX`、`screenY`
+- `identifier`
+
+## 示例
+
 ```js
-window.addEventListener('touchstart', function (e) {
-  console.log(e.targetTouches)
-  wrap.innerHTML = ''
-  event_touches = e.targetTouches;
-})
-
-window.addEventListener('touchmove', function (e) {
-  event_touches = e.targetTouches;
-})
-
-window.addEventListener('touchend', function (e) {
-  for (let key in e.changedTouches) {
-    if (key != 'length' && key != 'item') {
-      wrap.innerHTML += `第${key}个 ${e.changedTouches[key].identifier}`
-    }
-
-  }
-})
+window.addEventListener('touchstart', (event) => {
+  const touch = event.changedTouches[0];
+  console.log(touch.clientX, touch.clientY);
+});
 ```
 
-## 第三方移动端手势库
-### zepto 
-### 百度touchjs
+## 使用建议
+
+- 新项目可优先关注 Pointer Events，统一鼠标、触摸和手写笔输入。
+- 阻止默认行为前要确认不会破坏页面滚动和手势体验。
+
+## 总结
+
+Touch 事件适合移动端交互处理，但在现代项目中应同时关注 Pointer Events 的兼容与统一输入模型。

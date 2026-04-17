@@ -1,155 +1,158 @@
 ---
-title: 封装websocket
-author: Closerdoor
+title: WebSocket 封装
 date: '2021-12-12'
 ---
 
-## websocket
+## 适用场景
+
+需要统一处理连接、重连、心跳和消息解析时，封装成可复用实例。
+
+## 最小示例
+
 ```js
 class WSocket {
-  constructor(config) {
-    if (!config.url) {
-      throw new Error('websocket url is invalid')
-    }
+  constructor({
+    url,
+    retry = Infinity,
+    reconnectDelay = 3000,
+    pingInterval = 20000,
+    pingMessage = '{"code":"PING"}',
+  }) {
+    if (!url) throw new Error('websocket url is required');
+
+    this.url = url;
+    this.retry = retry;
+    this.reconnectDelay = reconnectDelay;
+    this.pingInterval = pingInterval;
+    this.pingMessage = pingMessage;
+
+    this.socket = null;
+    this.retryCount = 0;
+    this.closedByUser = false;
     this.reconnectTimer = null;
-    this.pingTimer = null;
-    this.pongTimer = null;
-    this.isAlive = false;
-    this.lockReconnect = false;
-    this.forbidReconnect = false; //是否手动关闭ws，调用close()
-    this.count = 0;
-    this.options = {
-      url: '',
-      retry: 10,
-      pingTimeout: 20000,
-      pongTimeout: 15000,
-      reconnectTimeout: 5000,
-      pingMsg: `{"code":"PING"}`,
-    }
-    this.ws = null; // websocket实例
-    //自定义事件，会在websocket实例中执行
+    this.heartbeatTimer = null;
+
     this.onopen = () => {};
-    this.onclose = () => {};
-    this.onerror = () => {};
     this.onmessage = () => {};
-    this.onreconnect = () => {};
-    this.reconnectFailed = () => {};
+    this.onerror = () => {};
+    this.onclose = () => {};
 
-    Object.keys(config).forEach(key => {
-      this.options[key] = config[key]
-    })
+    this.connect();
+  }
 
-    this.createWebSocket()
-  }
-  createWebSocket() {
-    try {
-      this.ws = new WebSocket(this.options.url);
-      this.initEvent();
-    } catch (e) {
-      this.reconnect();
-      throw e;
-    }
-  }
-  initEvent() {
-    this.ws.onopen = (e) => {
-      console.info('websocket was opened')
-      this.isAlive = true;
-      this.heartBeat()
+  connect() {
+    this.socket = new WebSocket(this.url);
+
+    this.socket.onopen = () => {
+      this.retryCount = 0;
+      this.startHeartbeat();
       this.onopen();
-    }
+    };
 
-    this.ws.onclose = (e) => {
-      this.isAlive = false
-      console.log('websocket was closed', `WebSocket onclose 连接状态： ${ws.readyState}` + 'websocket 断开: ' + e.code + ' ' + e.reason + ' ' + e.wasClean);
-      this.reconnect();
-      this.onclose()
-    }
+    this.socket.onmessage = (event) => {
+      this.startHeartbeat();
 
-    this.ws.onerror = (e) => {
-      this.isAlive = false
-      console.log('发生异常了', `WebSocket onerror 连接状态： ${ws.readyState}`);
-      this.onerror(e);
-      this.reconnect();
-    }
-
-    this.ws.onmessage = ({
-      data
-    }) => {
-      this.count = 0;
-      const res = data.indexOf('{') > -1 ? JSON.parse(data) : data
-      this.onmessage(res)
-      this.heartBeat();
-    }
-  }
-  send(data) {
-    if (!this.isAlive) return
-    // const text = typeof data === 'string' ? data : JSON.stringify(data)
-    this.ws.send(data)
-  }
-  close() {
-    // 如果手动关闭连接，不再重连
-    this.forbidReconnect = true;
-    //重置所有定时器
-    this.pingTimer && clearTimeout(this.pingTimer);
-    this.pongTimer && clearTimeout(this.pongTimer);
-    this.reconnectTimer && clearTimeout(this.reconnectTimer);
-    //断开websocket
-    this.ws.close();
-  }
-  //重连
-  reconnect() {
-    if (this.lockReconnect || this.forbidReconnect) return;
-    this.lockReconnect = true;
-    this.onreconnect();
-    this.reconnectTimer && clearTimeout(this.reconnectTimer);
-    this.reconnectTimer = setTimeout(() => {
-      this.lockReconnect = false;
-      if (this.count < this.options.retry) {
-        this.count++;
-        this.createWebSocket();
-      } else { //达到最大重连次数，重连失败
-        this.count = 0;
-        this.reconnectFailed();
+      let data = event.data;
+      try {
+        data = JSON.parse(event.data);
+      } catch {
+        // 非 JSON 消息直接透传
       }
-    }, this.options.reconnectTimeout)
+
+      this.onmessage(data);
+    };
+
+    this.socket.onerror = (error) => {
+      this.onerror(error);
+      this.socket.close();
+    };
+
+    this.socket.onclose = (event) => {
+      this.stopHeartbeat();
+      this.onclose(event);
+
+      if (!this.closedByUser) {
+        this.scheduleReconnect();
+      }
+    };
   }
-  //开始心跳
-  heartBeat() {
-    //重置心跳
-    this.pingTimer && clearTimeout(this.pingTimer);
-    this.pongTimer && clearTimeout(this.pongTimer);
-    //发送一个心跳消息，后端收到后，返回一个心跳消息，并进行重置
-    this.pingTimer = setTimeout(() => {
-      this.ws.send(this.options.pingMsg);
-      //如果超过一定时间未重置，说明后端已断开
-      this.pongTimer = setTimeout(() => {
-        this.ws.close();
-      }, this.options.pongTimeout)
-    }, this.options.pingTimeout)
+
+  send(data) {
+    if (this.socket?.readyState !== WebSocket.OPEN) return;
+    this.socket.send(typeof data === 'string' ? data : JSON.stringify(data));
+  }
+
+  close() {
+    this.closedByUser = true;
+    window.clearTimeout(this.reconnectTimer);
+    this.stopHeartbeat();
+    this.socket?.close();
+  }
+
+  scheduleReconnect() {
+    if (this.retryCount >= this.retry) return;
+
+    this.retryCount += 1;
+    window.clearTimeout(this.reconnectTimer);
+    this.reconnectTimer = window.setTimeout(() => this.connect(), this.reconnectDelay);
+  }
+
+  startHeartbeat() {
+    this.stopHeartbeat();
+    this.heartbeatTimer = window.setTimeout(() => {
+      this.send(this.pingMessage);
+      this.startHeartbeat();
+    }, this.pingInterval);
+  }
+
+  stopHeartbeat() {
+    window.clearTimeout(this.heartbeatTimer);
   }
 }
+
+const ws = new WSocket({
+  url: 'wss://example.com/ws?token=demo-token',
+});
+
+ws.onopen = () => ws.send({ code: 'READY' });
+ws.onmessage = (data) => console.log('收到消息:', data);
 ```
-## 使用
+
+## 说明
+
+- 浏览器端常用的是应用层心跳，不是底层 WebSocket ping/pong。
+- 如果页面销毁后不再需要连接，记得主动调用 `close()`。
+
+## WebSocket、SSE、Socket.IO
+
+- `WebSocket`：全双工，适合聊天室、协同编辑、游戏等双向实时通信。
+- `SSE`：服务端单向推送，适合通知流、日志流、报价流等场景。
+- `Socket.IO`：不是原生 WebSocket API，而是更高层的实时通信库，内置重连、房间等能力。
+
+## Socket.IO 最小示例
+
+### 服务端
+
 ```js
-const createImWebSocket = function () {
-  let url = process.env.VUE_APP_WS_IM;
-  if (localStorage.getItem('AccessToken')) {
-    url = `${process.env.VUE_APP_WS_IM}?token=${encodeURIComponent(
-      localStorage.getItem('AccessToken').slice(7)
-    )}`
-  }
-  let myWS = new WSocket({
-    url:url
+const Koa = require('koa');
+const server = require('http').createServer(new Koa().callback());
+const io = require('socket.io')(server);
+
+io.on('connection', (socket) => {
+  socket.emit('getData', { ok: true });
+  socket.on('addData', (payload) => {
+    socket.broadcast.emit('getData', payload);
   });
-  myWS.onopen = function () {
-    myWS.send(`{"code":"${MessageInfoType.MSG_READY}"}`);
-  }; 
-  myWS.onclose = function () {}
-  myWS.onerror = function (error) {}
-  myWS.onmessage = function (data) {
-    //处理data
-  }
-  myWS.onreconnect = function () {}
-  myWS.reconnectFailed = function () {}
-}
+});
+```
+
+### 客户端
+
+```html
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+  socket.emit('addData', { text: 'hello' });
+  socket.on('getData', (data) => console.log(data));
+</script>
 ```

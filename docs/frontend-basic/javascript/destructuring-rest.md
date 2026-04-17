@@ -1,46 +1,66 @@
 ---
-title: 解构赋值
+title: 解构赋值与剩余参数
 author: Closerdoor
 date: '2022-06-14'
 ---
 
+## 是什么
+
+解构赋值用于从数组或对象中快速取值，剩余语法 `...` 用于收集其余成员。
+
 ## 数组解构
+
 ```js
-let [a, b, ...arr1] = [1, 2, 3, 4, 5];
-let [, , , num,] = [1, 2, 3, 4, 5];
-[a = 10, b = 20] = arr; //a的默认值设置为10 b默认值20 
-//b  arr[1] undefined  默认值只对实际值是 undefined的时候生效
-
-[a, b] = [b, a];
-[c, b, d, a] = [a, b, c, d];
-
-//数组本质上也是一种对象
-let arr = [1, 2, 3, 4, 5];
-let { 0: first, [arr.length - 1]: last } = arr;
+const [first, second, ...rest] = [1, 2, 3, 4, 5];
+// first = 1
+// second = 2
+// rest = [3, 4, 5]
 ```
+
+支持默认值：
+
+```js
+const [a = 10, b = 20] = [1];
+// a = 1, b = 20
+```
+
 ## 对象解构
+
 ```js
-let x = { y: 22, z: true };
-// x对象中的y属性转移给变量 w z转移给o
-let { y: w, z: o } = x;
-//没有声明指令let时，需要用()使其变成独立语句
-({ x, y } = { x: 1, y: 2 });
-//解构中也可以有变量
-const metadata = {
-  title: 'Scratchpad',
-  url: '/en-US/docs/Tools/Scratchpad',
-};
-let key = 'title';
-let { [key]: englishTitle } = metadata;
+const user = { name: 'Tom', age: 18 };
+const { name, age: userAge } = user;
 ```
 
-## 函数解构赋值
+动态属性名也可以参与解构：
+
 ```js
-function format({
-  productName: name = '真皮扫地机器人'
-} = {}) {
-  return name;
+const key = 'title';
+const article = { title: 'Hello' };
+const { [key]: value } = article;
+```
+
+## 函数参数解构
+
+```js
+function createProduct({ name = '默认商品', price = 0 } = {}) {
+  return { name, price };
 }
-
-console.log(format());
 ```
+
+## rest 参数
+
+```js
+function sum(...numbers) {
+  return numbers.reduce((acc, item) => acc + item, 0);
+}
+```
+
+## 注意事项
+
+- 默认值仅在对应值为 `undefined` 时生效。
+- 对象解构是按属性名匹配，不按顺序。
+- `rest` 必须放在最后。
+
+## 总结
+
+解构提升的是读取效率与表达力，适合参数对象、返回值拆分和局部数据提取。

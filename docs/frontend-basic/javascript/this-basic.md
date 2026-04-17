@@ -1,37 +1,51 @@
 ---
-title: this
+title: this 基础
 author: Closerdoor
 date: '2021-12-12'
 ---
 
-## this
+## 是什么
 
-## call bind apply
+`this` 不是函数声明时决定的，而是函数调用时决定的。
 
-```html
-<ul id="list" title="">
-  <li>1 gdfhfdhgd</li>
-  <li>2 gdfhfdhgd</li>
-  <li>3 gdfhfdhgd</li>
-  <li id="active">4 gdfhfdhgd</li>
-  <li>5 gdfhfdhgd</li>
-</ul>
-<script>
-var aLi = document.querySelectorAll('#list li');
-var oActive = document.querySelector('#active');
+## 常见绑定规则
 
-//indexOf
-console.log(aLi);
+### 默认绑定
 
-console.log(getElementIdx(aLi, oActive));
+普通函数直接调用时，非严格模式下指向全局对象；严格模式下为 `undefined`。
 
-function getElementIdx(elements, item) {
-  for (var i = 0, len = elements.length; i < len; i++) {
-    if (item === elements[i]) {
-      return i;
-    }
-  }
-}
-[].indexOf.call(aLi, oActive)
-</script>
+### 隐式绑定
+
+```js
+const user = {
+  name: 'Tom',
+  say() {
+    console.log(this.name);
+  },
+};
+
+user.say();
 ```
+
+### 显式绑定
+
+通过 `call`、`apply`、`bind` 指定。
+
+### new 绑定
+
+构造函数通过 `new` 调用时，`this` 指向新实例。
+
+## 示例
+
+伪数组借用数组方法：
+
+```js
+const list = document.querySelectorAll('li');
+const active = document.querySelector('#active');
+
+const index = Array.prototype.indexOf.call(list, active);
+```
+
+## 总结
+
+判断 `this` 最直接的方法是看“函数如何被调用”，而不是看“函数写在哪里”。

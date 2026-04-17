@@ -1,60 +1,76 @@
 ---
-title: Vue 3.2 setup
+title: Vue 3 setup 语法糖
 author: Closerdoor
 date: '2021-12-12'
 ---
 
-## 获取props
-```js
+## 获取 props
+
+```vue
+<script setup lang="ts">
 const props = defineProps({
-  pluginId: {
-    type: String, 
-  },
+  pluginId: String,
 });
+</script>
 ```
-## 父组件调用子组件方法
-子组件
-```html
-<script lang="ts" setup>
-const test = ()=>{
-  //定义子组件中的方法
+
+## 子组件暴露方法
+
+### 子组件
+
+```vue
+<script setup lang="ts">
+function refresh() {
+  console.log('refresh');
 }
+
 defineExpose({
-  test
-})
+  refresh,
+});
 </script>
 ```
-父组件
-```html
-<div ref="box"></div>
-<script lang="ts" setup>
-const box = ref(null)
-box.value.test()
+
+### 父组件
+
+```vue
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import Child from './Child.vue';
+
+const childRef = ref<InstanceType<typeof Child> | null>(null);
+
+onMounted(() => {
+  childRef.value?.refresh();
+});
 </script>
+
+<template>
+  <Child ref="childRef" />
+</template>
 ```
+
 ## 子组件向父组件传参
-子组件
-```html
-<script lang="ts" setup>
-const emit = defineEmits(['on-save-ok'])
-emit('on-save-ok', '1111')
+
+```vue
+<script setup lang="ts">
+const emit = defineEmits<{
+  (event: 'save-ok', value: string): void;
+}>();
+
+emit('save-ok', 'done');
 </script>
 ```
-父组件
-```html
-<Parent ref="parent" @onSaveOk="test" />
-<script>
-const test = (content) => {
-  console.log(content)
-}
-</script>
+
+父组件监听：
+
+```vue
+<Child @save-ok="handleSave" />
 ```
-## 强制刷新组件forceUpdate
-```js
-import { getCurrentInstance } from "vue";
-let { ctx } = getCurrentInstance();
-ctx.$forceUpdate()
-//vue2中
-this.$forceUpdate()
-```
-## vue3中v-model语法糖
+
+## 关于强制刷新
+
+Vue 3 中应优先通过响应式数据驱动更新，不建议把 `$forceUpdate` 当作常规方案。只有在接入非响应式外部对象时，才考虑兜底处理。
+
+## 总结
+
+`<script setup>` 的重点不是语法更短，而是让组件依赖、输入和输出更直观。

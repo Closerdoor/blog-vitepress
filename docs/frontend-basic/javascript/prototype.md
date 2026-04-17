@@ -1,108 +1,70 @@
 ---
-title: 原型prototype
+title: 原型与原型链
 author: Closerdoor
 date: '2022-06-14'
 ---
 
-## prototype
-什么是原型和原型链
-每一个引用类型(对象)都有一个隐式属性__proto__(是个对象),在new实例化的时候,添加到实例对象的隐式属性,指向相应构造函数的原型
+## 是什么
 
-每个函数有一个属性叫prototype(原型，是个对象)。Array.prototype,Object.prototype
-prototype 原型是一个对象，对象上有一个默认属性constructor，constructor指向函数本身
-`Function.constructor === Function.prototype.constructor === Function`
-prototype上还有一个默认属性__proto__，指向相应构造函数的原型(Object.prototype)
-`obj.__proto__ = Object.prototype = Object.getPrototypeOf(obj)`
-### 构造函数
+JavaScript 对象通过原型关联形成查找链路，这条链就是原型链。
 
-### 任何函数都是 Function 的实例
-`Function.prototype === Object.__proto__`
-`Object.getPrototypeOf(Array) === Function.prototype`
-### 所有的prototype都是一个对象，而对象都是Object的实例
-`Object.prototype.isPrototypeOf(Function) === true`
-`Object.prototype.isPrototypeOf(Object) === true`
-### 实例对象
-实例对象 = new 构造函数
-__proto__属性，new实例化的时候添加到实例对象的隐式属性，是一个对象
-__proto__指向实例对象构造函数的原型,即 实例对象.__proto__ = function.prototype
+## 核心概念
 
-### 题目
+- 函数有 `prototype` 属性。
+- 实例对象可通过内部原型关联到构造函数的 `prototype`。
+- 属性查找会先找自身，再沿原型链向上查找。
+
+## 基本关系
+
 ```js
-[!!Array.hasOwnProperty , Array.hasOwnProperty(toString),[1,2,3] instanceof Object, typeof [1,2,3] === Array]
-// [true, false, true, false]
-[Function.prototype === Object.__proto__ ,Object.prototype.isPrototypeOf(Function)]
-```
-## constructor 
-constructor prototype中的this指向谁? 实例对象
-实例对象.constructor 就是构造函数原型上的constructor(实例对象.constructor === Function.prototype.constructor)
-`f.constructor === fn.prototype.constructor === fn`
-##
-建立一个构造函数，每次实例化时统计次数
-```js
-function Animal() {
+function User(name) {
   this.name = name;
-  this.age = age;
-  this.sex = sex;
 }
-Animal.prototype.list = [];
-Animal.prototype.init = function() {
-  this.list.push(this)
-}
-Animal.prototype.calc = function() {
-  console.log(this.list.length)
-}
+
+User.prototype.sayHi = function () {
+  return `Hi, ${this.name}`;
+};
+
+const user = new User('Tom');
+
+Object.getPrototypeOf(user) === User.prototype; // true
+user.sayHi(); // Hi, Tom
 ```
 
-## 继承
-### js经典组合继承
-1.继承构造函数(constructor)
-父类的构造函数在子类中call执行 传参
-2.继承原型
-Children.prototype = new Parent();
-Children.prototype.constructor = Children;
-或
-Children.prototype.__proto__ = Parent.prototype;
-缺点：父类构造函数的引用属性会共享
-```js
-function Animal(){
-  this.children = [1,2,3,4,5]
-}
-function Pig(){
+## constructor
 
-}
-Pig.prototype = new Animal();
-Pig.prototype.constructor = Pig;
-let pig1 = new Pig();
-let pig2 = new Pig();
-//通过这种方式继承，由于执行了new Animal()，则pig1和pig2的原型上都会有Animal自身的children属性，当修改了其中一个时，另一个也会发生变化
+默认情况下，原型对象上存在 `constructor`，通常指回构造函数本身。
+
+```js
+user.constructor === User; // true
 ```
 
-### 寄生式继承
+## `instanceof`
+
 ```js
-function inheritPrototype(childFn,parentFn) {
-  function Temp() {}
-  Temp.prototype = parentFn.prototype
-  let obj = new Temp();
-  obj.constructor = childFn;
-  childFn.prototype = obj;
-}
+user instanceof User; // true
+user instanceof Object; // true
 ```
-### Object.create实现类式继承
+
+它的本质是沿着原型链查找某个构造函数的 `prototype` 是否出现过。
+
+## 继承写法
+
+推荐使用 `Object.create` 建立原型关系：
+
 ```js
-function ChildFn(){
-  ParentFn.call(this)
-}
-//方式一
-ChildFn.prototype.__proto__ = ParentFn.prototype
-//方式二
-ChildFn.prototype = new ParentFn();
-ChildFn.prototype.constructor = ChildFn;
-//方式三
-ChildFn.prototype = Object.create(ParentFn.prototype);
-ChildFn.prototype.constructor = ChildFn;
-//方式四
-function Temp(){}
-Temp.prototype = ParentFn.prototype;
-ChildFn.prototype = new Temp();
-ChildFn.prototype.constructor = ChildFn;
+function Animal() {}
+function Dog() {}
+
+Dog.prototype = Object.create(Animal.prototype);
+Dog.prototype.constructor = Dog;
 ```
+
+## 注意事项
+
+- 不建议依赖 `__proto__` 做生产代码操作，优先使用标准 API。
+- 原型上放方法通常没问题，但不要放会被实例共享且可变的引用类型数据。
+
+## 总结
+
+原型链解决的是对象之间的共享与查找问题，是理解继承、实例方法和 `instanceof` 的基础。

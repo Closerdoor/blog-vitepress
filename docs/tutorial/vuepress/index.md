@@ -1,39 +1,75 @@
 ---
 title: VuePress 博客搭建
-author: Closerdoor
 date: '2022-06-24'
+category: tutorial
+description: 从初始化到首页配置的 VuePress 实操教程。
 ---
 
-## 介绍vuepress如何使用
+## 适用场景
 
-### 首页
-默认主题提供了一个首页(HomePage)，即根目录docs结构中的README.md，首页是可选的，对于 VuePress 中默认主题的首页，可以进行如下配置
+- 需要快速搭建文档站或个人博客。
+- 内容以 Markdown 为主，希望默认主题开箱即用。
+
+## 初始化步骤
+
+### 1. 安装依赖
+```bash
+npm install -D vuepress@1
 ```
+
+### 2. 准备目录
+```text
+docs/
+  README.md
+  .vuepress/
+    config.js
+```
+
+### 3. 添加脚本
+```json
+{
+  "scripts": {
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
+  }
+}
+```
+
+## 首页配置
+
+在 `docs/README.md` 中写入 frontmatter：
+
+```md
 ---
 home: true
 lang: zh-CN
-heroText: A  Personal Blog
+heroText: 我的博客
 heroImage: /logo.jpg
-actionText: 开始 →
-actionLink: /interview/
+actionText: 开始阅读
+actionLink: /question/
 features:
-- title: A Blog
-  details: 专注写作前端博客，记录日常所得。
-- title: For Me
-  details: 故九万里，则风斯在下矣，而后乃今培风；背负青天，而莫之夭阏者，而后乃今将图南。
-- title: For Interview
-  details: 广州，已入坑ღ( ´･ᴗ･` )比心
-footer: Copyright © 2019-present Wangtunan
+  - title: 笔记
+    details: 记录常用知识点与经验。
+  - title: 项目
+    details: 沉淀项目方案与复盘。
+footer: Copyright © 2022-present
 ---
 ```
-以上配置的具体含义
+
+## 本地运行
+
+```bash
+npm run docs:dev
 ```
-home:true：标记此页面是否为首页
-lang:zh-CN：表示本页面的语言为zh-CN(简体中文)
-heroText: 首页的标题内容
-heroImage: 首页的标题图片，其中全路径为docs/.vuepress/public/logo.jpg，默认去public目录下找静态资源
-actionText: 首页跳转按钮的内容
-actionLink: 首页跳转按钮挑战的路径，其中全路径为docs/interview/readme.md，默认readme命名的文件可以省略不写链接的后面内容，省略后的链接如上
-features: 表明首页的特征，固定的格式为title + details，以三栏流式布局的方式展示
-footer: 为底部内容，与普通的网页一样，我们可以在footer里面写版权信息
+
+## 构建发布
+
+```bash
+npm run docs:build
 ```
+
+## 常见问题
+
+- 静态资源默认放在 `docs/.vuepress/public`。
+- 首页按钮路径默认可省略 `README.md`。
+- 如果只是写内容站，先用默认主题即可，避免一开始过度定制。
