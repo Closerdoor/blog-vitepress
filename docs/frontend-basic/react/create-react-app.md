@@ -4,7 +4,7 @@ author: Closerdoor
 date: '2022-06-14'
 ---
 
-## 是什么
+## 工具定位
 
 Create React App 曾是 React 官方推荐的脚手架，但现在已不再是新项目首选。当前更常见的是 Vite、Next.js 或框架官方方案。
 

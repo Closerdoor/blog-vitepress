@@ -4,7 +4,7 @@ author: Closerdoor
 date: '2021-12-12'
 ---
 
-## 是什么
+## 基本概念
 
 AJAX 指浏览器在不整页刷新的前提下与服务端交换数据。现代项目中更常用 `fetch` 或 `axios`，但理解 `XMLHttpRequest` 仍然有助于排查网络问题。
 

@@ -4,7 +4,7 @@ author: Closerdoor
 date: '2021-12-12'
 ---
 
-## 是什么
+## 对象模型
 
 BOM 即 Browser Object Model，用于访问浏览器窗口、地址栏、历史记录、屏幕信息等运行环境能力。
 

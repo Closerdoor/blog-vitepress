@@ -4,7 +4,7 @@ author: Closerdoor
 date: '2026-04-17'
 ---
 
-## 是什么
+## 基本概念
 
 Vuex 是 Vue 生态中的集中式状态管理方案，常见于 Vue 2 项目和部分旧版 Vue 3 项目。
 

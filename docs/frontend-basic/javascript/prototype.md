@@ -4,7 +4,7 @@ author: Closerdoor
 date: '2022-06-14'
 ---
 
-## 是什么
+## 原型机制
 
 JavaScript 对象通过原型关联形成查找链路，这条链就是原型链。
 

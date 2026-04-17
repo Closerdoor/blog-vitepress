@@ -4,7 +4,7 @@ author: Closerdoor
 date: '2022-07-01'
 ---
 
-## 是什么
+## 拖拽模型
 
 HTML Drag and Drop API 用于实现拖拽与放置交互。
 

@@ -4,7 +4,7 @@ author: Closerdoor
 date: '2026-04-17'
 ---
 
-## 是什么
+## 基本概念
 
 NPM 全称 `Node Package Manager`，是 Node.js 默认的包管理工具。
 

@@ -4,7 +4,7 @@ author: Closerdoor
 date: '2022-06-23'
 ---
 
-## 是什么
+## 基本概念
 
 `Promise` 用于表示异步操作的最终结果，状态只有三种：`pending`、`fulfilled`、`rejected`。
 

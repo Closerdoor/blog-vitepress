@@ -4,7 +4,7 @@ author: Closerdoor
 date: '2021-12-12'
 ---
 
-## 是什么
+## 基本概念
 
 TypeScript 是 JavaScript 的超集，核心能力是静态类型检查与更好的工程化支持。
 

@@ -4,7 +4,7 @@ author: Closerdoor
 date: '2021-12-12'
 ---
 
-## 是什么
+## 基本概念
 
 `rem` 以根元素 `font-size` 为基准，常用于移动端按屏宽缩放布局。
 
