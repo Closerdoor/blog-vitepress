@@ -244,7 +244,8 @@ export default {
             { text: '内置模块', link: '/nodejs/node/built-in-module' },
             { text: 'Blob 二进制数据', link: '/nodejs/node/blob' },
             { text: 'FileReader', link: '/nodejs/node/file-reader' },
-            { text: '事件循环', link: '/nodejs/node/event-loop' }
+            { text: '事件循环', link: '/nodejs/node/event-loop' },
+            { text: 'Puppeteer 爬虫', link: '/nodejs/node/puppeteer-crawler' }
           ]
         }
       ],
